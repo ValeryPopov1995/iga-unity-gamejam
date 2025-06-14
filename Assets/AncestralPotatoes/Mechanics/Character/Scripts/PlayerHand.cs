@@ -12,7 +12,7 @@ namespace AncestralPotatoes.Character
 
     public class PlayerHand : MonoBehaviour
     {
-        public Potato SelectedPrefab { get; private set; }
+        public ReactiveProperty<Potato> SelectedPrefab { get; private set; } = new();
 
         public ReactiveProperty<float> ThrowLoad01 = new();
 
@@ -25,12 +25,19 @@ namespace AncestralPotatoes.Character
         [Inject] private readonly DiContainer container;
         private CancellationTokenSource source;
 
-
         private void Start()
         {
             fire.started += StartProgress;
             fire.canceled += EndProgress;
+            inventory.OnAdd += TrySelect;
+
             Enable();
+        }
+
+        private void TrySelect(Potato potato)
+        {
+            if (SelectedPrefab.Value == null)
+                SelectedPrefab.Value = potato;
         }
 
         [Button]
@@ -70,10 +77,16 @@ namespace AncestralPotatoes.Character
 
         private void EndProgress(InputAction.CallbackContext context)
         {
-            if (SelectedPrefab != null
+            if (SelectedPrefab.Value != null
                 && ThrowLoad01.Value >= throwMinMaxLoad01.x
                 && ThrowLoad01.Value <= throwMinMaxLoad01.y)
-                ThrowPotato(SelectedPrefab, ThrowLoad01.Value);
+            {
+                ThrowPotato(SelectedPrefab.Value, ThrowLoad01.Value);
+#if UNITY_EDITOR
+                Debug.Log("throw potato", this);
+#endif
+            }
+
 
             source?.Cancel();
             ThrowLoad01.Value = 0;
@@ -89,9 +102,9 @@ namespace AncestralPotatoes.Character
         {
             var next = inventory.RandomNext;
             inventory.TryRemovePotato(next);
-            if (SelectedPrefab != null)
-                inventory.TryAddPotato(SelectedPrefab);
-            SelectedPrefab = next;
+            if (SelectedPrefab.Value != null)
+                inventory.TryAddPotato(SelectedPrefab.Value);
+            SelectedPrefab.Value = next;
         }
     }
 }

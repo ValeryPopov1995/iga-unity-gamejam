@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -8,7 +7,6 @@ namespace KinematicCharacterController.Examples
     public class ExampleCharacterCamera : MonoBehaviour
     {
         [Header("Framing")]
-        public Camera Camera;
         public Vector2 FollowPointFraming = new Vector2(0f, 0f);
         public float FollowingSharpness = 10000f;
 
@@ -20,8 +18,10 @@ namespace KinematicCharacterController.Examples
         public float DistanceMovementSharpness = 10f;
 
         [Header("Rotation")]
-        public bool InvertX = false;
-        public bool InvertY = false;
+        [SerializeField] private bool invertX = false;
+        [SerializeField] private bool invertY = false;
+        [SerializeField] private bool useVerticalRotate = true;
+        [SerializeField] private bool useHorizontalRotate = true;
         [Range(-90f, 90f)]
         public float DefaultVerticalAngle = 20f;
         [Range(-90f, 90f)]
@@ -47,28 +47,25 @@ namespace KinematicCharacterController.Examples
         private bool _distanceIsObstructed;
         private float _currentDistance;
         private float _targetVerticalAngle;
-        private RaycastHit _obstructionHit;
         private int _obstructionCount;
-        private RaycastHit[] _obstructions = new RaycastHit[MaxObstructions];
-        private float _obstructionTime;
+        private readonly RaycastHit[] _obstructions = new RaycastHit[MaxObstructions];
         private Vector3 _currentFollowPosition;
-
         private const int MaxObstructions = 32;
 
-        void OnValidate()
+        private void OnValidate()
         {
             DefaultDistance = Mathf.Clamp(DefaultDistance, MinDistance, MaxDistance);
             DefaultVerticalAngle = Mathf.Clamp(DefaultVerticalAngle, MinVerticalAngle, MaxVerticalAngle);
         }
 
-        void Awake()
+        private void Awake()
         {
-            Transform = this.transform;
+            Transform = transform;
 
             _currentDistance = DefaultDistance;
             TargetDistance = _currentDistance;
 
-            _targetVerticalAngle = 0f;
+            _targetVerticalAngle = DefaultVerticalAngle;
 
             PlanarDirection = Vector3.forward;
         }
@@ -85,34 +82,32 @@ namespace KinematicCharacterController.Examples
         {
             if (FollowTransform)
             {
-                if (InvertX)
-                {
+                if (invertX)
                     rotationInput.x *= -1f;
-                }
-                if (InvertY)
-                {
+                if (invertY)
                     rotationInput.y *= -1f;
-                }
 
                 // Process rotation input
-                Quaternion rotationFromInput = Quaternion.Euler(FollowTransform.up * (rotationInput.x * RotationSpeed));
-                PlanarDirection = rotationFromInput * PlanarDirection;
+                if (useHorizontalRotate)
+                {
+                    var rotationFromInput = Quaternion.Euler(FollowTransform.up * (rotationInput.x * RotationSpeed));
+                    PlanarDirection = rotationFromInput * PlanarDirection;
+                }
                 PlanarDirection = Vector3.Cross(FollowTransform.up, Vector3.Cross(PlanarDirection, FollowTransform.up));
-                Quaternion planarRot = Quaternion.LookRotation(PlanarDirection, FollowTransform.up);
+                var planarRot = Quaternion.LookRotation(PlanarDirection, FollowTransform.up);
 
-                _targetVerticalAngle -= (rotationInput.y * RotationSpeed);
+                if (useVerticalRotate)
+                    _targetVerticalAngle -= rotationInput.y * RotationSpeed;
                 _targetVerticalAngle = Mathf.Clamp(_targetVerticalAngle, MinVerticalAngle, MaxVerticalAngle);
-                Quaternion verticalRot = Quaternion.Euler(_targetVerticalAngle, 0, 0);
-                Quaternion targetRotation = Quaternion.Slerp(Transform.rotation, planarRot * verticalRot, 1f - Mathf.Exp(-RotationSharpness * deltaTime));
+                var verticalRot = Quaternion.Euler(_targetVerticalAngle, 0, 0);
+                var targetRotation = Quaternion.Slerp(Transform.rotation, planarRot * verticalRot, 1f - Mathf.Exp(-RotationSharpness * deltaTime));
 
                 // Apply rotation
                 Transform.rotation = targetRotation;
 
                 // Process distance input
                 if (_distanceIsObstructed && Mathf.Abs(zoomInput) > 0f)
-                {
                     TargetDistance = _currentDistance;
-                }
                 TargetDistance += zoomInput * DistanceMovementSpeed;
                 TargetDistance = Mathf.Clamp(TargetDistance, MinDistance, MaxDistance);
 
@@ -121,13 +116,13 @@ namespace KinematicCharacterController.Examples
 
                 // Handle obstructions
                 {
-                    RaycastHit closestHit = new RaycastHit();
+                    var closestHit = new RaycastHit();
                     closestHit.distance = Mathf.Infinity;
                     _obstructionCount = Physics.SphereCastNonAlloc(_currentFollowPosition, ObstructionCheckRadius, -Transform.forward, _obstructions, TargetDistance, ObstructionLayers, QueryTriggerInteraction.Ignore);
-                    for (int i = 0; i < _obstructionCount; i++)
+                    for (var i = 0; i < _obstructionCount; i++)
                     {
-                        bool isIgnored = false;
-                        for (int j = 0; j < IgnoredColliders.Count; j++)
+                        var isIgnored = false;
+                        for (var j = 0; j < IgnoredColliders.Count; j++)
                         {
                             if (IgnoredColliders[j] == _obstructions[i].collider)
                             {
@@ -135,7 +130,7 @@ namespace KinematicCharacterController.Examples
                                 break;
                             }
                         }
-                        for (int j = 0; j < IgnoredColliders.Count; j++)
+                        for (var j = 0; j < IgnoredColliders.Count; j++)
                         {
                             if (IgnoredColliders[j] == _obstructions[i].collider)
                             {
@@ -165,7 +160,7 @@ namespace KinematicCharacterController.Examples
                 }
 
                 // Find the smoothed camera orbit position
-                Vector3 targetPosition = _currentFollowPosition - ((targetRotation * Vector3.forward) * _currentDistance);
+                var targetPosition = _currentFollowPosition - ((targetRotation * Vector3.forward) * _currentDistance);
 
                 // Handle framing
                 targetPosition += Transform.right * FollowPointFraming.x;
