@@ -12,15 +12,22 @@ namespace AncestralPotatoes.Enemies
         {
             _agent = GetComponent<NavMeshAgent>();
         }
-    }
 
-    public class DebugEnemyController : MonoBehaviour
-    {
-        [SerializeField] private Enemy _enemy;
-
-        private void Update()
+        public void SetTargetPosition(Vector3 targetPos)
         {
+            _agent.SetDestination(targetPos);
+        }
 
+        private void OnDrawGizmos()
+        {
+            if (Application.isPlaying)
+            {
+                var path = _agent.path;
+                foreach (var corner in path.corners)
+                {
+                    Gizmos.DrawCube(corner, Vector3.one * 0.3f);
+                }
+            }
         }
     }
 }
