@@ -1,3 +1,4 @@
+using AncestralPotatoes.Potatoes;
 using Cysharp.Threading.Tasks;
 using NaughtyAttributes;
 using System.Threading;
@@ -18,7 +19,7 @@ namespace Game.Character
         [Inject] private readonly DiContainer container;
         private CancellationTokenSource source;
 
-        public PotatoDiscriptionMockup Selected;// { get; private set; }
+        public Potato Selected;// { get; private set; }
 
         private void Start()
         {
@@ -50,10 +51,10 @@ namespace Game.Character
             ForcePorgress.Value = 0;
         }
 
-        private void ThrowPotato(PotatoDiscriptionMockup selected, float force01)
+        private void ThrowPotato(Potato selected, float force01)
         {
-            var potato = container.InstantiatePrefabForComponent<PotatoMockup>(selected.Prefab, hand.position, hand.rotation, default);
-            potato.Rigidbody.AddForce(hand.forward * force01 * forceCoef, ForceMode.Impulse);
+            var potato = container.InstantiatePrefabForComponent<Potato>(selected, hand.position, hand.rotation, default);
+            potato.GetRigidbody().AddForce(hand.forward * force01 * forceCoef, ForceMode.Impulse);
         }
 
         [Button]
