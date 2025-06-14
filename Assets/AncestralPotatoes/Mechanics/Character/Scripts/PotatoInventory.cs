@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-namespace Game.Character
+namespace AncestralPotatoes.Character
 {
     public class PotatoInventory : MonoBehaviour
     {
