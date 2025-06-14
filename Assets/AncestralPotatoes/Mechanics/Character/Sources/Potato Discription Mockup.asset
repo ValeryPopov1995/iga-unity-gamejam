@@ -1,0 +1,15 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 3cf0b2087d4278c4f867b92868ec7ee3, type: 3}
+  m_Name: Potato Discription Mockup
+  m_EditorClassIdentifier: 
+  <Prefab>k__BackingField: {fileID: 708554722608664430, guid: 6667a6c8c77c5904e83475ae4266a468, type: 3}
