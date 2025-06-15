@@ -584,7 +584,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c71b0ade8e1a7be4fa8740001e689703, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  <MaxCouunt>k__BackingField: 10
+  <MaxPotatoCount>k__BackingField: 10
 --- !u!4 &352874629
 Transform:
   m_ObjectHideFlags: 0
@@ -706,6 +706,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   interaction: {fileID: 2092902883}
   canvasGroup: {fileID: 391324331}
+  fadeDuration: 0.5
   bar: {fileID: 511552737}
   label: {fileID: 1702647776}
   description: {fileID: 998783650}
@@ -719,7 +720,7 @@ GameObject:
   m_Component:
   - component: {fileID: 470311760}
   - component: {fileID: 470311759}
-  - component: {fileID: 470311758}
+  - component: {fileID: 470311761}
   m_Layer: 0
   m_Name: Dispanser
   m_TagString: Untagged
@@ -727,27 +728,6 @@ GameObject:
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
   m_IsActive: 1
---- !u!135 &470311758
-SphereCollider:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 470311757}
-  m_Material: {fileID: 0}
-  m_IncludeLayers:
-    serializedVersion: 2
-    m_Bits: 0
-  m_ExcludeLayers:
-    serializedVersion: 2
-    m_Bits: 0
-  m_LayerOverridePriority: 0
-  m_IsTrigger: 1
-  m_ProvidesContacts: 0
-  m_Enabled: 1
-  serializedVersion: 3
-  m_Radius: 2
-  m_Center: {x: 0, y: 0, z: 0}
 --- !u!114 &470311759
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -760,8 +740,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 3343a0c0e82e73046b1708b5e663fea9, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  <Name>k__BackingField: 
-  <ActionDesription>k__BackingField: 
+  <Name>k__BackingField: "\u0442\u0435\u0441\u0442\u043E\u0432\u044B\u0439 \u0434\u0438\u0441\u043F\u0430\u043D\u0441\u0435\u0440"
+  <ActionDesription>k__BackingField: "\u0432\u0437\u044F\u0442\u044C \u043A\u0430\u0440\u0442\u043E\u0448\u043A\u0443"
   <InteractAction>k__BackingField:
     <ActionDuration>k__BackingField: 1
     ActionProgress:
@@ -773,7 +753,15 @@ MonoBehaviour:
     m_Id: 0035562f-2502-47b7-bf38-fead98bcfe16
     m_Processors: 
     m_Interactions: 
-    m_SingletonActionBindings: []
+    m_SingletonActionBindings:
+    - m_Name: 
+      m_Id: c613b7c8-e441-46f6-b036-542689b02039
+      m_Path: <Keyboard>/f
+      m_Interactions: 
+      m_Processors: 
+      m_Groups: 
+      m_Action: Input
+      m_Flags: 0
     m_Flags: 0
   potatoPrefab: {fileID: 6941729985430978340, guid: 0adce2986135a564ab059cf40edd2aae, type: 3}
 --- !u!4 &470311760
@@ -792,6 +780,27 @@ Transform:
   - {fileID: 106570236}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!135 &470311761
+SphereCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 470311757}
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_IsTrigger: 1
+  m_ProvidesContacts: 0
+  m_Enabled: 1
+  serializedVersion: 3
+  m_Radius: 1
+  m_Center: {x: 0, y: 0, z: 0}
 --- !u!1 &483458888
 GameObject:
   m_ObjectHideFlags: 0
@@ -3403,6 +3412,7 @@ GameObject:
   m_Component:
   - component: {fileID: 2092902884}
   - component: {fileID: 2092902883}
+  - component: {fileID: 2092902885}
   m_Layer: 0
   m_Name: Interaction
   m_TagString: Untagged
@@ -3431,12 +3441,33 @@ Transform:
   m_GameObject: {fileID: 2092902882}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalPosition: {x: 0, y: 1, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 4898695122008107}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!135 &2092902885
+SphereCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2092902882}
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_IsTrigger: 1
+  m_ProvidesContacts: 0
+  m_Enabled: 1
+  serializedVersion: 3
+  m_Radius: 1
+  m_Center: {x: 0, y: 0, z: 0}
 --- !u!1 &1072007094267471
 GameObject:
   m_ObjectHideFlags: 0

@@ -28,6 +28,7 @@ namespace AncestralPotatoes.Character
 #if UNITY_EDITOR
             Debug.Log("Potato removed", this);
 #endif
+            OnPotatoRemoved?.Invoke(potato);
             return true;
         }
 
@@ -39,6 +40,7 @@ namespace AncestralPotatoes.Character
 #if UNITY_EDITOR
             Debug.Log("Potato added", this);
 #endif
+            OnPotatoAdded?.Invoke(potato);
             return true;
         }
     }

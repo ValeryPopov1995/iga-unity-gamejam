@@ -35,6 +35,7 @@ namespace AncestralPotatoes.Character
 
         private void StartProgress(InputAction.CallbackContext context)
         {
+            if (SelectedPotato.Value == null) return;
             StartTrajectory();
             holdAction.Start();
         }
@@ -47,7 +48,7 @@ namespace AncestralPotatoes.Character
             && ThrowLoad01.Value >= throwMinMaxLoad01.x
             && ThrowLoad01.Value <= throwMinMaxLoad01.y)
             {
-                ThrowPotato(SelectedPotato.Value, ThrowLoad01.Value);
+                ThrowPotato(ThrowLoad01.Value);
                 SelectPotato();
                 Debug.Log("throw potato", this);
             }
@@ -86,6 +87,7 @@ namespace AncestralPotatoes.Character
 
         private async void StartTrajectory()
         {
+            await UniTask.NextFrame();
             while (ThrowLoad01.Value > 0)
             {
                 trajectoryRenderer.DrawTrajectory(hand.position, CalculateForce(ThrowLoad01.Value));
@@ -93,15 +95,15 @@ namespace AncestralPotatoes.Character
             }
         }
 
-        private void ThrowPotato(Potato selected, float force01)
+        private void ThrowPotato(float force01)
         {
-            var potato = container.InstantiatePrefabForComponent<Potato>(selected, hand.position, hand.rotation, default);
+            var potato = container.InstantiatePrefabForComponent<Potato>(SelectedPotato.Value, hand.position, hand.rotation, default);
             potato.GetRigidbody().AddForce(CalculateForce(ThrowLoad01.Value), ForceMode.Impulse);
 
             var torque = Random.insideUnitSphere * randomTorque;
             potato.GetRigidbody().AddTorque(torque, ForceMode.Impulse);
 
-            selected = null;
+            SelectedPotato.Value = null;
         }
 
         private void SelectPotato()
