@@ -1,7 +1,7 @@
+using System.Threading;
 using AncestralPotatoes.Potatoes;
 using Cysharp.Threading.Tasks;
 using NaughtyAttributes;
-using System.Threading;
 using UniRx;
 using UnityEngine;
 using UnityEngine.InputSystem;
@@ -9,7 +9,6 @@ using Zenject;
 
 namespace AncestralPotatoes.Character
 {
-
     public class PlayerHand : MonoBehaviour
     {
         public ReactiveProperty<Potato> SelectedPrefab { get; private set; } = new();
@@ -20,6 +19,7 @@ namespace AncestralPotatoes.Character
         [SerializeField] private float throwDuration = 2;
         [SerializeField] private InputAction fire, change;
         [SerializeField] private PotatoInventory inventory;
+        [SerializeField] private TrajectoryRenderer trajectoryRenderer;
         [SerializeField] private Transform hand;
         [SerializeField] private float forceCoef = 10;
         [Inject] private readonly DiContainer container;
@@ -33,6 +33,7 @@ namespace AncestralPotatoes.Character
 
             Enable();
         }
+        private Vector3 CalculateForce(float force01) => hand.forward * force01 * forceCoef;
 
         private void TrySelect(Potato potato)
         {
@@ -65,6 +66,7 @@ namespace AncestralPotatoes.Character
             source?.Cancel();
             source = new();
             var token = source.Token;
+            StartTrajectory(token);
             while (ThrowLoad01.Value < 1 && !token.IsCancellationRequested)
             {
                 ThrowLoad01.Value += Time.deltaTime / throwDuration;
@@ -73,6 +75,15 @@ namespace AncestralPotatoes.Character
 
             if (!token.IsCancellationRequested)
                 ThrowLoad01.Value = 1;
+        }
+
+        private async void StartTrajectory(CancellationToken token)
+        {
+            while (!token.IsCancellationRequested)
+            {
+                trajectoryRenderer.DrawTrajectory(hand.position, CalculateForce(ThrowLoad01.Value));
+                await UniTask.NextFrame();
+            }
         }
 
         private void EndProgress(InputAction.CallbackContext context)
@@ -87,15 +98,15 @@ namespace AncestralPotatoes.Character
 #endif
             }
 
-
             source?.Cancel();
             ThrowLoad01.Value = 0;
+            trajectoryRenderer.DrawTrajectory(default, default);
         }
 
         private void ThrowPotato(Potato selected, float force01)
         {
             var potato = container.InstantiatePrefabForComponent<Potato>(selected, hand.position, hand.rotation, default);
-            potato.GetRigidbody().AddForce(hand.forward * force01 * forceCoef, ForceMode.Impulse);
+            potato.GetRigidbody().AddForce(CalculateForce(ThrowLoad01.Value), ForceMode.Impulse);
         }
 
         private void SelectPotato()
