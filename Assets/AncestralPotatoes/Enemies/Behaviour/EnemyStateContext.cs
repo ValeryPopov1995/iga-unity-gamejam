@@ -1,16 +1,16 @@
-using AncestralPotatoes;
+using AncestralPotatoes.Character;
 using AncestralPotatoes.Enemies;
 using AncestralPotatoes.Enemies.Behaviour;
 using AncestralPotatoes.States;
 
 public class EnemyStateContext
 {
-    public EnemyStateContext(Enemy enemy, IPlayerLocator playerLocator, IStateMachine stateMachine)
+    public EnemyStateContext(Enemy enemy, Player player, IStateMachine stateMachine)
     {
         Approach = new ApproachingState(this, stateMachine);
         Attack = new MeleeAttackingState(this, stateMachine);
         Enemy = enemy;
-        PlayerLocator = playerLocator;
+        Player = player;
         StateMachine = stateMachine;
     }
 
@@ -18,6 +18,6 @@ public class EnemyStateContext
     public IState Attack { get; }
 
     public Enemy Enemy { get; }
-    public IPlayerLocator PlayerLocator { get; }
+    public Player Player { get; }
     public IStateMachine StateMachine { get; }
 }

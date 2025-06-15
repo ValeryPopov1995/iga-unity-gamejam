@@ -24,7 +24,7 @@ namespace AncestralPotatoes.Enemies.Behaviour
         {
             var enemy = Context.Enemy;
 
-            var playerPos = Context.PlayerLocator.GetPlayerPosition();
+            var playerPos = Context.Player.transform.position;
             var enemyPos = enemy.transform.position;
 
             if ((playerPos - enemyPos).magnitude > enemy.MeleeRange)
