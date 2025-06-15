@@ -24,5 +24,10 @@ namespace AncestralPotatoes.States
         {
             State.Update();
         }
+
+        public IState GetCurrentState()
+        {
+            return State;
+        }
     }
 }

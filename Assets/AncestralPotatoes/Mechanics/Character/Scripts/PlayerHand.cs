@@ -11,7 +11,7 @@ namespace AncestralPotatoes.Character
 {
     public class PlayerHand : MonoBehaviour
     {
-        public ReactiveProperty<Potato> SelectedPrefab { get; private set; } = new();
+        public ReactiveProperty<Potato> SelectedPotato { get; private set; } = new();
 
         public ReactiveProperty<float> ThrowLoad01 => holdAction.ActionProgress;
 
@@ -29,7 +29,7 @@ namespace AncestralPotatoes.Character
         {
             fire.started += StartProgress;
             fire.canceled += EndProgress;
-            inventory.OnAdd += TrySelect;
+            inventory.OnPotatoAdded += TakeIfEmpty;
             Enable();
         }
 
@@ -43,11 +43,11 @@ namespace AncestralPotatoes.Character
         {
             trajectoryRenderer.DrawTrajectory(default, default);
 
-            if (SelectedPrefab.Value != null
+            if (SelectedPotato.Value != null
             && ThrowLoad01.Value >= throwMinMaxLoad01.x
             && ThrowLoad01.Value <= throwMinMaxLoad01.y)
             {
-                ThrowPotato(SelectedPrefab.Value, ThrowLoad01.Value);
+                ThrowPotato(SelectedPotato.Value, ThrowLoad01.Value);
                 SelectPotato();
                 Debug.Log("throw potato", this);
             }
@@ -57,10 +57,11 @@ namespace AncestralPotatoes.Character
 
         private Vector3 CalculateForce(float force01) => hand.forward * force01 * forceCoef;
 
-        private void TrySelect(Potato potato)
+        private void TakeIfEmpty(Potato newPotato)
         {
-            if (SelectedPrefab.Value == null)
-                SelectedPrefab.Value = potato;
+            if (SelectedPotato.Value == null)
+                if (inventory.TryGetRandomPotato(out var potato))
+                    SelectedPotato.Value = potato;
         }
 
         [Button]
@@ -100,17 +101,18 @@ namespace AncestralPotatoes.Character
             var torque = Random.insideUnitSphere * randomTorque;
             potato.GetRigidbody().AddTorque(torque, ForceMode.Impulse);
 
-            inventory.TryRemovePotato(selected);
             selected = null;
         }
 
         private void SelectPotato()
         {
-            var next = inventory.RandomNext;
-            inventory.TryRemovePotato(next);
-            if (SelectedPrefab.Value != null)
-                inventory.TryAddPotato(SelectedPrefab.Value);
-            SelectedPrefab.Value = next;
+            if (!inventory.TryGetRandomPotato(out var potato))
+                return;
+
+            if (SelectedPotato.Value != null)
+                inventory.TryAddPotato(SelectedPotato.Value);
+            SelectedPotato.Value = potato;
+
         }
     }
 }

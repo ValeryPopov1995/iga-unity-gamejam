@@ -1,4 +1,3 @@
-using AncestralPotatoes.Character;
 using AncestralPotatoes.Enemies;
 using UnityEngine;
 using Zenject;
@@ -12,8 +11,9 @@ namespace AncestralPotatoes.Scene
 
         public override void InstallBindings()
         {
-            Container.Bind<Player>().FromComponentInHierarchy().AsSingle();
-            Container.Bind<PlayerCamera>().FromComponentInHierarchy().AsSingle();
+            //Container.Bind<Player>().FromComponentInHierarchy().AsSingle();
+            //Container.Bind<PlayerCamera>().FromComponentInHierarchy().AsSingle();
+            PlayerInstaller.Install(Container);
 
             Container.Bind<IEnemyFactory>().FromInstance(enemyFactory).AsSingle();
             Container.Bind<IEnemyBehaviourFactory>().FromInstance(enemyBehaviourFactory).AsSingle();
