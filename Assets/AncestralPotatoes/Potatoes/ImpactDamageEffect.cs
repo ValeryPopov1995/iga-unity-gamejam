@@ -29,7 +29,7 @@ namespace AncestralPotatoes.Potatoes
             if (speed < MinSpeed)
                 return damage;
 
-            damage.Damage = Mathf.Clamp(MinDamage + (speed - MinSpeed) * SpeedDamageCoefficient, MinDamage, MaxDamage);
+            damage.Amount = Mathf.Clamp(MinDamage + (speed - MinSpeed) * SpeedDamageCoefficient, MinDamage, MaxDamage);
             return damage;
         }
     }

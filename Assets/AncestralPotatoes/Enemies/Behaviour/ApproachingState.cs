@@ -19,11 +19,16 @@ namespace AncestralPotatoes.Enemies.Behaviour
         public override void Update()
         {
             var playerPos = Context.Player.transform.position;
-            var enemyPos = Context.Enemy.transform.position;
+            var enemy = Context.Enemy;
+            var enemyPos = enemy.transform.position;
 
-            if ((enemyPos - playerPos).magnitude < Context.Enemy.MeleeAttackRange)
+            var distance = (enemyPos - playerPos).magnitude;
+
+            if (distance < enemy.MeleeAttackDistance)
                 StateMachine.GoTo(Context.MeleeAttack);
 
+            if (distance < enemy.RangedAttackDistance && enemy.PotatoInventory.PotatoCount > 0)
+                StateMachine.GoTo(Context.RangedAttack);
 
             Context.Enemy.SetTargetPosition(playerPos);
         }
