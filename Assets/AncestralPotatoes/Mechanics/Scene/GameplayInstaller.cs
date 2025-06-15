@@ -8,6 +8,7 @@ namespace AncestralPotatoes.Scene
         public override void InstallBindings()
         {
             Container.Bind<Player>().FromComponentInHierarchy().AsSingle();
+            Container.Bind<PlayerCamera>().FromComponentInHierarchy().AsSingle();
         }
     }
 }
