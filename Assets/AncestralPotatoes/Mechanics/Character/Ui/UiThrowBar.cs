@@ -35,6 +35,11 @@ namespace AncestralPotatoes.Character.Ui
             alpha = 0;
         }
 
+        private void OnDestroy()
+        {
+            source?.Cancel();
+        }
+
         private void UpdateBar(float load01)
         {
             barSize01 = load01;

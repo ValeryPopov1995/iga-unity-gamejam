@@ -1,7 +1,7 @@
+using AncestralPotatoes.PotatoDispancers;
 using AncestralPotatoes.Potatoes;
 using Cysharp.Threading.Tasks;
 using NaughtyAttributes;
-using System.Threading;
 using UniRx;
 using UnityEngine;
 using UnityEngine.InputSystem;
@@ -13,27 +13,48 @@ namespace AncestralPotatoes.Character
     {
         public ReactiveProperty<Potato> SelectedPrefab { get; private set; } = new();
 
-        public ReactiveProperty<float> ThrowLoad01 = new();
+        public ReactiveProperty<float> ThrowLoad01 => holdAction.ActionProgress;
 
         [SerializeField] private Vector2 throwMinMaxLoad01 = new(.3f, 1f);
-        [SerializeField] private float throwDuration = 2;
         [SerializeField] private InputAction fire, change;
         [SerializeField] private PotatoInventory inventory;
         [SerializeField] private TrajectoryRenderer trajectoryRenderer;
         [SerializeField] private Transform hand;
         [SerializeField] private int forceCoef = 10;
         [SerializeField] private int randomTorque = 10;
+        [SerializeField] private HoldAction holdAction;
         [Inject] private readonly DiContainer container;
-        private CancellationTokenSource source;
 
         private void Start()
         {
             fire.started += StartProgress;
             fire.canceled += EndProgress;
             inventory.OnAdd += TrySelect;
-
             Enable();
         }
+
+        private void StartProgress(InputAction.CallbackContext context)
+        {
+            StartTrajectory();
+            holdAction.Start();
+        }
+
+        private void EndProgress(InputAction.CallbackContext context)
+        {
+            trajectoryRenderer.DrawTrajectory(default, default);
+
+            if (SelectedPrefab.Value != null
+            && ThrowLoad01.Value >= throwMinMaxLoad01.x
+            && ThrowLoad01.Value <= throwMinMaxLoad01.y)
+            {
+                ThrowPotato(SelectedPrefab.Value, ThrowLoad01.Value);
+                SelectPotato();
+                Debug.Log("throw potato", this);
+            }
+
+            holdAction.Cancel();
+        }
+
         private Vector3 CalculateForce(float force01) => hand.forward * force01 * forceCoef;
 
         private void TrySelect(Potato potato)
@@ -62,46 +83,13 @@ namespace AncestralPotatoes.Character
             Disable();
         }
 
-        private async void StartProgress(InputAction.CallbackContext context)
+        private async void StartTrajectory()
         {
-            source?.Cancel();
-            source = new();
-            var token = source.Token;
-            StartTrajectory(token);
-            while (ThrowLoad01.Value < 1 && !token.IsCancellationRequested)
-            {
-                ThrowLoad01.Value += Time.deltaTime / throwDuration;
-                await UniTask.NextFrame();
-            }
-
-            if (!token.IsCancellationRequested)
-                ThrowLoad01.Value = 1;
-        }
-
-        private async void StartTrajectory(CancellationToken token)
-        {
-            while (!token.IsCancellationRequested)
+            while (ThrowLoad01.Value > 0)
             {
                 trajectoryRenderer.DrawTrajectory(hand.position, CalculateForce(ThrowLoad01.Value));
                 await UniTask.NextFrame();
             }
-        }
-
-        private void EndProgress(InputAction.CallbackContext context)
-        {
-            if (SelectedPrefab.Value != null
-                && ThrowLoad01.Value >= throwMinMaxLoad01.x
-                && ThrowLoad01.Value <= throwMinMaxLoad01.y)
-            {
-                ThrowPotato(SelectedPrefab.Value, ThrowLoad01.Value);
-#if UNITY_EDITOR
-                Debug.Log("throw potato", this);
-#endif
-            }
-
-            source?.Cancel();
-            ThrowLoad01.Value = 0;
-            trajectoryRenderer.DrawTrajectory(default, default);
         }
 
         private void ThrowPotato(Potato selected, float force01)
@@ -111,6 +99,9 @@ namespace AncestralPotatoes.Character
 
             var torque = Random.insideUnitSphere * randomTorque;
             potato.GetRigidbody().AddTorque(torque, ForceMode.Impulse);
+
+            inventory.TryRemovePotato(selected);
+            selected = null;
         }
 
         private void SelectPotato()
