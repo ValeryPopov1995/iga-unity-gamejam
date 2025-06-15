@@ -34,6 +34,5 @@ namespace AncestralPotatoes.Character
             OnRemove?.Invoke(potato);
             return true;
         }
-
     }
 }
