@@ -1,7 +1,7 @@
-using System.Threading;
 using AncestralPotatoes.Potatoes;
 using Cysharp.Threading.Tasks;
 using NaughtyAttributes;
+using System.Threading;
 using UniRx;
 using UnityEngine;
 using UnityEngine.InputSystem;
@@ -21,7 +21,8 @@ namespace AncestralPotatoes.Character
         [SerializeField] private PotatoInventory inventory;
         [SerializeField] private TrajectoryRenderer trajectoryRenderer;
         [SerializeField] private Transform hand;
-        [SerializeField] private float forceCoef = 10;
+        [SerializeField] private int forceCoef = 10;
+        [SerializeField] private int randomTorque = 10;
         [Inject] private readonly DiContainer container;
         private CancellationTokenSource source;
 
@@ -107,6 +108,9 @@ namespace AncestralPotatoes.Character
         {
             var potato = container.InstantiatePrefabForComponent<Potato>(selected, hand.position, hand.rotation, default);
             potato.GetRigidbody().AddForce(CalculateForce(ThrowLoad01.Value), ForceMode.Impulse);
+
+            var torque = Random.insideUnitSphere * randomTorque;
+            potato.GetRigidbody().AddTorque(torque, ForceMode.Impulse);
         }
 
         private void SelectPotato()
