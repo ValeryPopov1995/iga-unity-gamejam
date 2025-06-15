@@ -1013,6 +1013,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c439720384dca9b47acfead92fe35de0, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  inventory: {fileID: 352874628}
+  spawnPoint: {fileID: 488939097}
+  forceCoef: 50
+  randomTorque: 1
   throwMinMaxLoad01: {x: 0.3, y: 1}
   fire:
     m_Name: Fire
@@ -1048,11 +1052,7 @@ MonoBehaviour:
       m_Action: Change
       m_Flags: 0
     m_Flags: 0
-  inventory: {fileID: 352874628}
   trajectoryRenderer: {fileID: 1964325983}
-  hand: {fileID: 488939097}
-  forceCoef: 50
-  randomTorque: 1
   holdAction:
     <ActionDuration>k__BackingField: 1
     ActionProgress:

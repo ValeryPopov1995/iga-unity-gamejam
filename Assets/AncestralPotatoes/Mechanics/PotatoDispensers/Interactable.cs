@@ -23,8 +23,13 @@ namespace AncestralPotatoes.PotatoDispancers
         private void Start()
         {
             input.started += ctx => InteractAction.Start();
-            InteractAction.ActionProgress.Subscribe(TryInteract);
-            input.canceled += ctx => InteractAction.Cancel();
+            InteractAction.ActionProgress.Subscribe(TryInteractOnFull);
+            input.canceled += ctx =>
+            {
+                if (InteractAction.ActionProgress.Value < 1)
+                    Interact(InteractAction.ActionProgress.Value);
+                InteractAction.Cancel();
+            };
         }
 
         public void Select(Interaction interaction)
@@ -39,10 +44,10 @@ namespace AncestralPotatoes.PotatoDispancers
             input.Disable();
         }
 
-        public void TryInteract(float progress)
+        protected virtual void TryInteractOnFull(float progress01)
         {
-            Interact(InteractAction.ActionProgress.Value);
-            InteractAction.Cancel();
+            if (progress01 < 1) return;
+            Interact(progress01);
         }
 
         protected virtual void Interact(float progress01) { }
