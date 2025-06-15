@@ -11,8 +11,8 @@ namespace AncestralPotatoes
             switch (damage.Type)
             {
                 case EDamageType.Impact:
-                    Debug.Log($"Received {damage.Damage} damage");
-                    Health -= damage.Damage;
+                    Debug.Log($"Received {damage.Amount} damage");
+                    Health -= damage.Amount;
                     if (Health < 0)
                         Destroy(gameObject);
                     break;
