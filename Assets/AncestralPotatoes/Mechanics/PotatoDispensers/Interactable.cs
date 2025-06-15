@@ -18,7 +18,17 @@ namespace AncestralPotatoes.PotatoDispancers
             input.canceled += ctx => InteractAction.Cancel();
         }
 
-        private void TryInteract(float progress)
+        public void Select()
+        {
+            input.Enable();
+        }
+
+        public void Unselect()
+        {
+            input.Disable();
+        }
+
+        public void TryInteract(float progress)
         {
             if (InteractAction.ActionProgress.Value < 1) return;
             Intercat();

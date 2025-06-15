@@ -5,18 +5,16 @@ using Zenject;
 
 namespace AncestralPotatoes.PotatoDispancers
 {
-    public class PotatoDispenser : MonoBehaviour
+    public class PotatoDispenser : Interactable
     {
         [SerializeField] private Potato potatoPrefab;
         [Inject] private readonly Player player;
 
-        private void OnTriggerEnter(Collider other)
+        protected override void Intercat()
         {
-            if (other.gameObject != player.gameObject) return;
+            base.Intercat();
             player.Inventory.TryAddPotato(potatoPrefab);
-#if UNITY_EDITOR
             Debug.Log("potato dispensed", this);
-#endif
         }
     }
 }
