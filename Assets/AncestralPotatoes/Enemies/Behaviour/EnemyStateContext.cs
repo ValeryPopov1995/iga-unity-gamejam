@@ -8,14 +8,16 @@ public class EnemyStateContext
     public EnemyStateContext(Enemy enemy, Player player, IStateMachine stateMachine)
     {
         Approach = new ApproachingState(this, stateMachine);
-        Attack = new MeleeAttackingState(this, stateMachine);
+        MeleeAttack = new MeleeAttackingState(this, stateMachine);
+        RangedAttack = new RangedAttackingState(this, stateMachine);
         Enemy = enemy;
         Player = player;
         StateMachine = stateMachine;
     }
 
     public IState Approach { get; }
-    public IState Attack { get; }
+    public IState MeleeAttack { get; }
+    public IState RangedAttack { get; }
 
     public Enemy Enemy { get; }
     public Player Player { get; }

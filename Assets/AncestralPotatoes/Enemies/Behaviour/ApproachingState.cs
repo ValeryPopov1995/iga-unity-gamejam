@@ -21,11 +21,12 @@ namespace AncestralPotatoes.Enemies.Behaviour
             var playerPos = Context.Player.transform.position;
             var enemyPos = Context.Enemy.transform.position;
 
-            if ((enemyPos - playerPos).magnitude < Context.Enemy.MeleeRange)
-                StateMachine.GoTo(Context.Attack);
+            if ((enemyPos - playerPos).magnitude < Context.Enemy.MeleeAttackRange)
+                StateMachine.GoTo(Context.MeleeAttack);
 
 
             Context.Enemy.SetTargetPosition(playerPos);
         }
     }
+
 }
