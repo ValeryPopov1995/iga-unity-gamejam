@@ -7,54 +7,39 @@ using UnityEngine;
 using UnityEngine.InputSystem;
 using Zenject;
 
-namespace Game.Character
+namespace AncestralPotatoes.Character
 {
     public class PlayerHand : MonoBehaviour
     {
-        public ReactiveProperty<float> ForcePorgress = new();
+        public ReactiveProperty<Potato> SelectedPrefab { get; private set; } = new();
+
+        public ReactiveProperty<float> ThrowLoad01 = new();
+
+        [SerializeField] private Vector2 throwMinMaxLoad01 = new(.3f, 1f);
+        [SerializeField] private float throwDuration = 2;
         [SerializeField] private InputAction fire, change;
         [SerializeField] private PotatoInventory inventory;
+        [SerializeField] private TrajectoryRenderer trajectoryRenderer;
         [SerializeField] private Transform hand;
-        [SerializeField] private float forceCoef = 10;
+        [SerializeField] private int forceCoef = 10;
+        [SerializeField] private int randomTorque = 10;
         [Inject] private readonly DiContainer container;
         private CancellationTokenSource source;
-
-        public Potato Selected;// { get; private set; }
 
         private void Start()
         {
             fire.started += StartProgress;
             fire.canceled += EndProgress;
+            inventory.OnAdd += TrySelect;
+
+            Enable();
         }
+        private Vector3 CalculateForce(float force01) => hand.forward * force01 * forceCoef;
 
-        private async void StartProgress(InputAction.CallbackContext context)
+        private void TrySelect(Potato potato)
         {
-            source?.Cancel();
-            source = new();
-            var token = source.Token;
-            while (ForcePorgress.Value < 1 && !token.IsCancellationRequested)
-            {
-                ForcePorgress.Value += Time.deltaTime;
-                await UniTask.NextFrame();
-            }
-
-            if (!token.IsCancellationRequested)
-                ForcePorgress.Value = 1;
-        }
-
-        private void EndProgress(InputAction.CallbackContext context)
-        {
-            if (ForcePorgress.Value == 1)
-                ThrowPotato(Selected, ForcePorgress.Value);
-
-            source?.Cancel();
-            ForcePorgress.Value = 0;
-        }
-
-        private void ThrowPotato(Potato selected, float force01)
-        {
-            var potato = container.InstantiatePrefabForComponent<Potato>(selected, hand.position, hand.rotation, default);
-            potato.GetRigidbody().AddForce(hand.forward * force01 * forceCoef, ForceMode.Impulse);
+            if (SelectedPrefab.Value == null)
+                SelectedPrefab.Value = potato;
         }
 
         [Button]
@@ -77,13 +62,64 @@ namespace Game.Character
             Disable();
         }
 
+        private async void StartProgress(InputAction.CallbackContext context)
+        {
+            source?.Cancel();
+            source = new();
+            var token = source.Token;
+            StartTrajectory(token);
+            while (ThrowLoad01.Value < 1 && !token.IsCancellationRequested)
+            {
+                ThrowLoad01.Value += Time.deltaTime / throwDuration;
+                await UniTask.NextFrame();
+            }
+
+            if (!token.IsCancellationRequested)
+                ThrowLoad01.Value = 1;
+        }
+
+        private async void StartTrajectory(CancellationToken token)
+        {
+            while (!token.IsCancellationRequested)
+            {
+                trajectoryRenderer.DrawTrajectory(hand.position, CalculateForce(ThrowLoad01.Value));
+                await UniTask.NextFrame();
+            }
+        }
+
+        private void EndProgress(InputAction.CallbackContext context)
+        {
+            if (SelectedPrefab.Value != null
+                && ThrowLoad01.Value >= throwMinMaxLoad01.x
+                && ThrowLoad01.Value <= throwMinMaxLoad01.y)
+            {
+                ThrowPotato(SelectedPrefab.Value, ThrowLoad01.Value);
+#if UNITY_EDITOR
+                Debug.Log("throw potato", this);
+#endif
+            }
+
+            source?.Cancel();
+            ThrowLoad01.Value = 0;
+            trajectoryRenderer.DrawTrajectory(default, default);
+        }
+
+        private void ThrowPotato(Potato selected, float force01)
+        {
+            var potato = container.InstantiatePrefabForComponent<Potato>(selected, hand.position, hand.rotation, default);
+            potato.GetRigidbody().AddForce(CalculateForce(ThrowLoad01.Value), ForceMode.Impulse);
+
+            var torque = Random.insideUnitSphere * randomTorque;
+            potato.GetRigidbody().AddTorque(torque, ForceMode.Impulse);
+        }
+
         private void SelectPotato()
         {
             var next = inventory.RandomNext;
             inventory.TryRemovePotato(next);
-            if (Selected != null)
-                inventory.TryAddPotato(Selected);
-            Selected = next;
+            if (SelectedPrefab.Value != null)
+                inventory.TryAddPotato(SelectedPrefab.Value);
+            SelectedPrefab.Value = next;
         }
     }
 }
