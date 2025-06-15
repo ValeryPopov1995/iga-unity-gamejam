@@ -29,8 +29,14 @@ namespace AncestralPotatoes.Character
         {
             fire.started += StartProgress;
             fire.canceled += EndProgress;
+            change.started += SelectPotato;
             inventory.OnPotatoAdded += TakeIfEmpty;
             Enable();
+        }
+
+        private void SelectPotato(InputAction.CallbackContext context)
+        {
+            SelectPotato();
         }
 
         private void StartProgress(InputAction.CallbackContext context)
@@ -82,6 +88,10 @@ namespace AncestralPotatoes.Character
 
         private void OnDestroy()
         {
+            fire.started -= StartProgress;
+            fire.canceled -= EndProgress;
+            change.started -= SelectPotato;
+            inventory.OnPotatoAdded -= TakeIfEmpty;
             Disable();
         }
 

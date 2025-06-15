@@ -10,9 +10,10 @@ namespace AncestralPotatoes.PotatoDispancers
         [SerializeField] private Potato potatoPrefab;
         [Inject] private readonly Player player;
 
-        protected override void Intercat()
+        protected override void Interact(float progress01)
         {
-            base.Intercat();
+            base.Interact(progress01);
+            if (progress01 < 1) return;
             player.Inventory.TryAddPotato(potatoPrefab);
             Debug.Log("potato dispensed", this);
         }

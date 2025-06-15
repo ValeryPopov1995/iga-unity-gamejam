@@ -4,12 +4,21 @@ using UnityEngine.InputSystem;
 
 namespace AncestralPotatoes.PotatoDispancers
 {
+    [RequireComponent(typeof(Collider))]
     public class Interactable : MonoBehaviour
     {
         [field: SerializeField] public string Name { get; private set; }
         [field: SerializeField] public string ActionDesription { get; private set; }
         [field: SerializeField] public HoldAction InteractAction { get; private set; }
+
+        protected Interaction interaction;
+
         [SerializeField] private InputAction input;
+
+        private void Awake()
+        {
+            GetComponent<Collider>().isTrigger = true;
+        }
 
         private void Start()
         {
@@ -18,23 +27,24 @@ namespace AncestralPotatoes.PotatoDispancers
             input.canceled += ctx => InteractAction.Cancel();
         }
 
-        public void Select()
+        public void Select(Interaction interaction)
         {
+            this.interaction = interaction;
             input.Enable();
         }
 
         public void Unselect()
         {
+            interaction = null;
             input.Disable();
         }
 
         public void TryInteract(float progress)
         {
-            if (InteractAction.ActionProgress.Value < 1) return;
-            Intercat();
+            Interact(InteractAction.ActionProgress.Value);
             InteractAction.Cancel();
         }
 
-        protected virtual void Intercat() { }
+        protected virtual void Interact(float progress01) { }
     }
 }
