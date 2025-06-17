@@ -5,7 +5,8 @@ namespace AncestralPotatoes.Enemies
 {
     public class EnemyFactory : MonoBehaviour, IEnemyFactory
     {
-        [SerializeField] private Enemy _enemyPrefab;
+        [SerializeField] private Enemy _fighterPrefab;
+        [SerializeField] private Enemy _supportPrefab;
         [Inject] protected DiContainer DiContainer { get; set; }
 
         public void Init(DiContainer diContainer)
@@ -13,11 +14,14 @@ namespace AncestralPotatoes.Enemies
             DiContainer = diContainer;
         }
 
-
-        public Enemy CreateEnemy(Vector3 position)
+        public Enemy CreateFighter(Vector3 position)
         {
-            var enemy = DiContainer.InstantiatePrefabForComponent<Enemy>(_enemyPrefab, position, Quaternion.identity, transform);
-            return enemy;
+            return DiContainer.InstantiatePrefabForComponent<Enemy>(_fighterPrefab, position, Quaternion.identity, transform);
+        }
+
+        public Enemy CreateSupport(Vector3 position)
+        {
+            return DiContainer.InstantiatePrefabForComponent<Enemy>(_supportPrefab, position, Quaternion.identity, transform);
         }
     }
 }

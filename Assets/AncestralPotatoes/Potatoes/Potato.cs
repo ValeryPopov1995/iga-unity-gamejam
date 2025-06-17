@@ -27,7 +27,7 @@ namespace AncestralPotatoes.Potatoes
 
         protected void HandleCollision(Collision collision)
         {
-            Debug.Log("Collision");
+            //Debug.Log("Collision");
             foreach (var effect in _effects)
                 effect.Apply(collision);
         }

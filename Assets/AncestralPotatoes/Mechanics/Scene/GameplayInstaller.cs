@@ -17,7 +17,7 @@ namespace AncestralPotatoes.Scene
 
             Container.Bind<IEnemyFactory>().FromInstance(enemyFactory).AsSingle();
             Container.Bind<IEnemyBehaviourFactory>().FromInstance(enemyBehaviourFactory).AsSingle();
-            Container.Bind<EnemyManager>().FromComponentInHierarchy().AsSingle();
+            Container.Bind<Enemies.EnemyManager>().FromComponentInHierarchy().AsSingle();
         }
     }
 }

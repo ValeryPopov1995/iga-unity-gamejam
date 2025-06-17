@@ -1,5 +1,4 @@
 ﻿using AncestralPotatoes.States;
-using DG.Tweening;
 using UnityEngine;
 
 public class RangedAttackingState : EnemyState
@@ -22,6 +21,11 @@ public class RangedAttackingState : EnemyState
 
     public override void Update()
     {
+        if (!Context.IsCloseEnoughToPlayer())
+        {
+            Context.StateMachine.GoTo(Context.ClosingUp);
+            return;
+        }
         var enemy = Context.Enemy;
         var player = Context.Player;
 
@@ -29,13 +33,18 @@ public class RangedAttackingState : EnemyState
 
         var inventory = enemy.PotatoInventory;
         if (inventory.PotatoCount == 0 || distance > enemy.RangedAttackDistance)
+        {
             Context.StateMachine.GoTo(Context.Approach);
+            return;
+        }
 
         if (AttackCooldown <= 0f)
         {
             enemy.SetTargetPosition(enemy.transform.position);
-            var tweener = enemy.transform.DOLookAt(player.transform.position, 0.2f, up: Vector3.up);
-            tweener.onComplete += enemy.ExecuteRangedAttack;
+            enemy.Hand.transform.LookAt(player.transform.position, Vector3.up);
+
+            //var tweener = enemy.transform.DOLookAt(player.transform.position, 0.2f, up: Vector3.up);
+            enemy.ExecuteRangedAttack();
             AttackCooldown = enemy.RangedAttackCooldown;
         }
         AttackCooldown -= Time.deltaTime;

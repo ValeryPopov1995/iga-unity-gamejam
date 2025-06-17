@@ -11,6 +11,7 @@ namespace AncestralPotatoes.Character
         public void ReceiveDamage(DamageDescription damage)
         {
             Health -= damage.Amount;
+            Debug.Log($"Received {damage.Amount} damage ({Health})");
         }
 
         private void Awake()
