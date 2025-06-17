@@ -20,7 +20,7 @@ namespace AncestralPotatoes.PotatoDispancers
         private void Select(Interactable interactable)
         {
             this.interactable = interactable;
-            interactable.Select();
+            interactable.Select(this);
             OnEnter?.Invoke(interactable);
         }
 

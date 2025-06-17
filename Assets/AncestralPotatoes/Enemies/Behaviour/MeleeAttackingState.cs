@@ -27,13 +27,13 @@ namespace AncestralPotatoes.Enemies.Behaviour
             var playerPos = Context.Player.transform.position;
             var enemyPos = enemy.transform.position;
 
-            if ((playerPos - enemyPos).magnitude > enemy.MeleeAttackRange)
+            if ((playerPos - enemyPos).magnitude > enemy.MeleeAttackDistance)
                 StateMachine.GoTo(Context.Approach);
 
             if (AttackCooldown <= 0f)
             {
                 enemy.ExecuteMeleeAttack();
-                AttackCooldown = enemy.MeleeCooldown;
+                AttackCooldown = enemy.MeleeAttackCooldown;
             }
             AttackCooldown -= Time.deltaTime;
         }

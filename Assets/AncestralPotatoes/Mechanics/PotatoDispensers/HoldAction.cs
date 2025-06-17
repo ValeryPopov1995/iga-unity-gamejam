@@ -20,12 +20,9 @@ namespace AncestralPotatoes.PotatoDispancers
             var token = source.Token;
             while (ActionProgress.Value < 1 && !token.IsCancellationRequested)
             {
-                ActionProgress.Value += Time.deltaTime / ActionDuration;
+                ActionProgress.Value = Mathf.Clamp01(ActionProgress.Value + Time.deltaTime / ActionDuration);
                 await UniTask.NextFrame();
             }
-
-            if (!token.IsCancellationRequested)
-                ActionProgress.Value = 1;
         }
 
         public void Cancel()

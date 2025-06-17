@@ -4,37 +4,52 @@ using UnityEngine.InputSystem;
 
 namespace AncestralPotatoes.PotatoDispancers
 {
+    [RequireComponent(typeof(Collider))]
     public class Interactable : MonoBehaviour
     {
         [field: SerializeField] public string Name { get; private set; }
         [field: SerializeField] public string ActionDesription { get; private set; }
         [field: SerializeField] public HoldAction InteractAction { get; private set; }
+
+        protected Interaction interaction;
+
         [SerializeField] private InputAction input;
 
-        private void Start()
+        protected virtual void Awake()
         {
-            input.started += ctx => InteractAction.Start();
-            InteractAction.ActionProgress.Subscribe(TryInteract);
-            input.canceled += ctx => InteractAction.Cancel();
+            GetComponent<Collider>().isTrigger = true;
         }
 
-        public void Select()
+        protected virtual void Start()
         {
+            input.started += ctx => InteractAction.Start();
+            InteractAction.ActionProgress.Subscribe(TryInteractOnFull);
+            input.canceled += ctx =>
+            {
+                if (InteractAction.ActionProgress.Value < 1)
+                    Interact(InteractAction.ActionProgress.Value);
+                InteractAction.Cancel();
+            };
+        }
+
+        public virtual void Select(Interaction interaction)
+        {
+            this.interaction = interaction;
             input.Enable();
         }
 
-        public void Unselect()
+        public virtual void Unselect()
         {
+            interaction = null;
             input.Disable();
         }
 
-        public void TryInteract(float progress)
+        protected virtual void TryInteractOnFull(float progress01)
         {
-            if (InteractAction.ActionProgress.Value < 1) return;
-            Intercat();
-            InteractAction.Cancel();
+            if (progress01 == 1)
+                Interact(progress01);
         }
 
-        protected virtual void Intercat() { }
+        protected virtual void Interact(float progress01) { }
     }
 }

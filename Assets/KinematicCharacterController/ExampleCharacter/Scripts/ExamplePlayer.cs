@@ -1,5 +1,7 @@
-﻿using UnityEngine;
+﻿using AncestralPotatoes.Character;
+using UnityEngine;
 using UnityEngine.InputSystem;
+using Zenject;
 
 namespace KinematicCharacterController.Examples
 {
@@ -11,6 +13,7 @@ namespace KinematicCharacterController.Examples
         [SerializeField] private InputAction Mouse;
         [SerializeField] private InputAction MouseScrollInput;
         [SerializeField] private InputAction Move;
+        [Inject] private readonly Player player;
 
         private void Start()
         {
@@ -52,14 +55,14 @@ namespace KinematicCharacterController.Examples
         {
             // Create the look input vector for the camera
             var mouse = Mouse.ReadValue<Vector2>();
-            Vector3 lookInputVector = new Vector3(mouse.x, mouse.y, 0f);
+            var lookInputVector = new Vector3(mouse.x, mouse.y, 0f);
 
             // Prevent moving the camera while the cursor isn't locked
             if (Cursor.lockState != CursorLockMode.Locked)
                 lookInputVector = Vector3.zero;
 
             // Input for zooming the camera (disabled in WebGL because it can cause problems)
-            float scrollInput = -MouseScrollInput.ReadValue<float>();
+            var scrollInput = -MouseScrollInput.ReadValue<float>();
 #if UNITY_WEBGL
         scrollInput = 0f;
 #endif
@@ -70,10 +73,10 @@ namespace KinematicCharacterController.Examples
 
         private void HandleCharacterInput()
         {
-            PlayerCharacterInputs characterInputs = new PlayerCharacterInputs();
+            var characterInputs = new PlayerCharacterInputs();
 
             // Build the CharacterInputs struct
-            var move = Move.ReadValue<Vector2>();
+            var move = Move.ReadValue<Vector2>() * player.MoveCoef;
             characterInputs.MoveAxisForward = move.y;
             characterInputs.MoveAxisRight = move.x;
             characterInputs.CameraRotation = CharacterCamera.Transform.rotation;

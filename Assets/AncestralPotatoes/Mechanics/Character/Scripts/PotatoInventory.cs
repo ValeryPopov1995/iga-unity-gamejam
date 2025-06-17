@@ -8,9 +8,8 @@ namespace AncestralPotatoes.Character
     public class PotatoInventory : MonoBehaviour, IPotatoInventory
     {
         private readonly List<Potato> potatoes = new();
-
-        public int PotatoCount => potatoes.Count;
         [field: SerializeField] public int MaxPotatoCount { get; private set; } = 10;
+        public int PotatoCount => potatoes.Count;
 
         public event Action<Potato> OnPotatoAdded;
         public event Action<Potato> OnPotatoRemoved;
@@ -28,17 +27,18 @@ namespace AncestralPotatoes.Character
 #if UNITY_EDITOR
             Debug.Log("Potato removed", this);
 #endif
+            OnPotatoRemoved?.Invoke(potato);
             return true;
         }
 
         public bool TryAddPotato(Potato potato)
         {
-            if (potatoes.Count == MaxPotatoCount || potatoes.Contains(potato))
-                return false;
+            if (potatoes.Count == MaxPotatoCount) return false;
             potatoes.Add(potato);
 #if UNITY_EDITOR
             Debug.Log("Potato added", this);
 #endif
+            OnPotatoAdded?.Invoke(potato);
             return true;
         }
     }
