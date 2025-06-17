@@ -15,12 +15,12 @@ namespace AncestralPotatoes.PotatoDispancers
 
         [SerializeField] private InputAction input;
 
-        private void Awake()
+        protected virtual void Awake()
         {
             GetComponent<Collider>().isTrigger = true;
         }
 
-        private void Start()
+        protected virtual void Start()
         {
             input.started += ctx => InteractAction.Start();
             InteractAction.ActionProgress.Subscribe(TryInteractOnFull);
@@ -32,13 +32,13 @@ namespace AncestralPotatoes.PotatoDispancers
             };
         }
 
-        public void Select(Interaction interaction)
+        public virtual void Select(Interaction interaction)
         {
             this.interaction = interaction;
             input.Enable();
         }
 
-        public void Unselect()
+        public virtual void Unselect()
         {
             interaction = null;
             input.Disable();
@@ -46,8 +46,8 @@ namespace AncestralPotatoes.PotatoDispancers
 
         protected virtual void TryInteractOnFull(float progress01)
         {
-            if (progress01 < 1) return;
-            Interact(progress01);
+            if (progress01 == 1)
+                Interact(progress01);
         }
 
         protected virtual void Interact(float progress01) { }

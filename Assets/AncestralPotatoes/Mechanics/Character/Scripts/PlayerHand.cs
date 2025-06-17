@@ -22,7 +22,10 @@ namespace AncestralPotatoes.Character
             fire.started += StartProgress;
             fire.canceled += EndProgress;
             change.started += SelectPotato;
+
             inventory.OnPotatoAdded += TakeIfEmpty;
+            SelectedPotato.Subscribe(TakeIfEmpty).AddTo(this);
+
             Enable();
         }
 
@@ -47,7 +50,6 @@ namespace AncestralPotatoes.Character
             && ThrowLoad01.Value <= throwMinMaxLoad01.y)
             {
                 ThrowPotato(ThrowLoad01.Value);
-                SelectPotato();
                 Debug.Log("throw potato", this);
             }
 

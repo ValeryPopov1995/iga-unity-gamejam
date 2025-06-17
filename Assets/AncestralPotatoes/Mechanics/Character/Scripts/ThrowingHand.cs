@@ -20,6 +20,7 @@ namespace AncestralPotatoes.Character
         public virtual void ThrowPotato(float force01)
         {
             var potato = container.InstantiatePrefabForComponent<Potato>(SelectedPotato.Value, spawnPoint.position, spawnPoint.rotation, default);
+            potato.transform.SetParent(null); // i dont know why
             potato.GetRigidbody().AddForce(CalculateForce(force01), ForceMode.Impulse);
 
             var torque = Random.insideUnitSphere * randomTorque;
