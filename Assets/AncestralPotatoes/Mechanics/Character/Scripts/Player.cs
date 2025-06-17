@@ -4,7 +4,7 @@ namespace AncestralPotatoes.Character
 {
     public class Player : MonoBehaviour, IDamageReceiver
     {
-        public float Health { get; private set; }
+        [field: SerializeField] public float Health { get; private set; } = 30f;
         public PotatoInventory Inventory { get; private set; }
         public PlayerHand Hand { get; private set; }
 

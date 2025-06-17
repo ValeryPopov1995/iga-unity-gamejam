@@ -34,7 +34,7 @@ namespace AncestralPotatoes.Character
 
         public bool TryAddPotato(Potato potato)
         {
-            if (potatoes.Count == MaxPotatoCount || potatoes.Contains(potato))
+            if (potatoes.Count == MaxPotatoCount)
                 return false;
             potatoes.Add(potato);
 #if UNITY_EDITOR

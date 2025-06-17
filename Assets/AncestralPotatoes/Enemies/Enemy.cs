@@ -12,7 +12,7 @@ namespace AncestralPotatoes.Enemies
         private NavMeshAgent agent;
         private IStateMachine stateMachine;
         public IPotatoInventory PotatoInventory { get; protected set; }
-        public PlayerHand Hand { get; protected set; }
+        public ThrowingHand Hand { get; protected set; }
 
         [Inject] private readonly Player player;
 
@@ -29,7 +29,7 @@ namespace AncestralPotatoes.Enemies
             agent = GetComponent<NavMeshAgent>();
             agent.stoppingDistance = MeleeAttackDistance * 0.9f;
             PotatoInventory = GetComponent<PotatoInventory>();
-            Hand = GetComponent<PlayerHand>();
+            Hand = GetComponent<ThrowingHand>();
         }
 
         private void Update()
@@ -83,7 +83,9 @@ namespace AncestralPotatoes.Enemies
 
         public void ExecuteRangedAttack()
         {
-
+            Debug.Log("Throwing potato");
+            Hand.SelectPotato();
+            Hand.ThrowPotato(1f);
         }
     }
 }
