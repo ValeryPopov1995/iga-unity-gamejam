@@ -7,6 +7,6 @@ namespace AncestralPotatoes.Potatoes
         string Name { get; }
         string Discription { get; }
         Rigidbody GetRigidbody();
-
+        GameObject CreateVisualInstance();
     }
 }

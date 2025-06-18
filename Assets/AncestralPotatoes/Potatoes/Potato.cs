@@ -7,7 +7,8 @@ namespace AncestralPotatoes.Potatoes
     [RequireComponent(typeof(Rigidbody))]
     public class Potato : MonoBehaviour, IPotato
     {
-        private Rigidbody _rb;
+        [SerializeField] private GameObject visual;
+        private Rigidbody _rigidbody;
         private IPotatoEffect[] _effects;
         public float DespawnTimeoutSeconds = 60;
 
@@ -16,12 +17,12 @@ namespace AncestralPotatoes.Potatoes
 
         private void Awake()
         {
-            _rb = GetComponent<Rigidbody>();
+            _rigidbody = GetComponent<Rigidbody>();
             _effects = GetComponents<IPotatoEffect>();
             _ = DespawnAfterTimeoutAsync();
         }
 
-        public Rigidbody GetRigidbody() => _rb;
+        public Rigidbody GetRigidbody() => _rigidbody;
 
         private void OnCollisionEnter(Collision collision) => HandleCollision(collision);
 
@@ -41,6 +42,11 @@ namespace AncestralPotatoes.Potatoes
         private void OnDestroy()
         {
             Debug.Log("Removed potato");
+        }
+
+        public GameObject CreateVisualInstance()
+        {
+            return Instantiate(visual);
         }
     }
 }
