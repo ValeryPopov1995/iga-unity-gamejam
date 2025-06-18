@@ -113,6 +113,7 @@ namespace AncestralPotatoes.Enemies
 
         private async void Die(DamageDescription damage)
         {
+            GlobalStats.IncrementDefeatedEnemies();
             await SetRagdoll(true);
             var rb = GetComponent<Rigidbody>();
             rb.AddForceAtPosition(-damage.Force, damage.Point, ForceMode.Impulse);
@@ -134,8 +135,7 @@ namespace AncestralPotatoes.Enemies
                 await UniTask.NextFrame();
                 var rb = gameObject.AddComponent<Rigidbody>();
                 await UniTask.NextFrame();
-            }
-            else
+            } else
             {
                 agent.enabled = true;
                 if (TryGetComponent<Rigidbody>(out var rigidbody))

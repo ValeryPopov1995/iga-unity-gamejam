@@ -16,7 +16,6 @@ namespace AncestralPotatoes.Enemies
         [SerializeField] private Vector2 MinMaxSpawnDelay = new(5f, 20f);
         private float currentSpawnDelay;
 
-        [SerializeField] private int maxEnemies = 3;
         private readonly List<Enemy> enemies = new();
         private void Awake()
         {
@@ -31,8 +30,17 @@ namespace AncestralPotatoes.Enemies
             while (!token.IsCancellationRequested)
             {
                 await UniTask.Delay(TimeSpan.FromSeconds(currentSpawnDelay));
-                if (enemies.Count == maxEnemies)
-                    continue;
+                switch (enemyType)
+                {
+                    case EEnemyType.Fighter:
+                        if (GlobalStats.FightersOnLevel >= GlobalStats.MaxFightersOnLevel)
+                            continue;
+                        break;
+                    case EEnemyType.Support:
+                        if (GlobalStats.SupportsOnLevel >= GlobalStats.MaxSupportsOnLevel)
+                            continue;
+                        break;
+                }
                 Enemy enemy = enemyType switch
                 {
                     EEnemyType.Fighter => enemyManager.SpawnFighter(transform.position),
