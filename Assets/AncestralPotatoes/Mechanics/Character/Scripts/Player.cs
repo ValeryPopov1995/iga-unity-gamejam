@@ -30,6 +30,7 @@ namespace AncestralPotatoes.Character
         private void Awake()
         {
             Inventory = GetComponentInChildren<PotatoInventory>();
+            Inventory.OnPotatoAdded += _ => GlobalStats.IncrementCollectedPotatoes();
             Hand = GetComponentInChildren<PlayerHand>();
             Rigidbody = GetComponentInChildren<Rigidbody>();
             Animator = GetComponentInChildren<PlayerAnimator>();
@@ -39,7 +40,8 @@ namespace AncestralPotatoes.Character
 
         public void ReceiveDamage(DamageDescription damage)
         {
-            if (IsDead) return;
+            if (IsDead)
+                return;
 
             Health -= damage.Amount;
             playerCamera.Shake(demageShake);

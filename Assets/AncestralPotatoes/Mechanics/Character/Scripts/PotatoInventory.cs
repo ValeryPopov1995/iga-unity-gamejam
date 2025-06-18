@@ -47,10 +47,11 @@ namespace AncestralPotatoes.Character
 
         public bool TryAddPotato(Potato potato)
         {
-            if (potatoes.Count == MaxPotatoCount) return false;
+            if (potatoes.Count == MaxPotatoCount)
+                return false;
             potatoes.Add(potato);
 #if UNITY_EDITOR
-            Debug.Log("Potato added", this);
+            // Debug.Log("Potato added", this);
 #endif
             OnPotatoAdded?.Invoke(potato);
             sxfPlayer.PlayOneShot(changeInventoryClip, transform.position);
