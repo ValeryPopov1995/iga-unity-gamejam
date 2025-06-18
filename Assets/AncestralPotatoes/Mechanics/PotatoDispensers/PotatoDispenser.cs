@@ -11,6 +11,7 @@ namespace AncestralPotatoes.PotatoDispancers
     {
         [SerializeField] private PotatoInventoryPack inventoryPack;
         [SerializeField] private PotatoInventory inventory;
+        [SerializeField] private Vector2Int takeCount = new(2, 4);
         [Inject] private readonly Player player;
         [Inject] private readonly IPotatoDispenserLocator locator;
 
@@ -31,7 +32,9 @@ namespace AncestralPotatoes.PotatoDispancers
 
             if (inventory.TryGetRandomPotato(out var potato))
             {
-                player.Inventory.TryAddPotato(potato);
+                var count = UnityEngine.Random.Range(takeCount.x, takeCount.y + 1);
+                for (var i = 0; i < count; i++)
+                    player.Inventory.TryAddPotato(potato);
                 Debug.Log("potato dispensed", this);
             }
         }

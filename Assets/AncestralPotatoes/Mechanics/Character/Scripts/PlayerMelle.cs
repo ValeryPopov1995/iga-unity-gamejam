@@ -27,6 +27,8 @@ namespace AncestralPotatoes.Character
             strike.started += Strike;
             strike.Enable();
             shovel.SetActive(false);
+
+            player.OnDeath += () => strike.Disable();
         }
 
         private void OnDestroy()

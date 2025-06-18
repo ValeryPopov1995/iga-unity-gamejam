@@ -49,7 +49,7 @@ MonoBehaviour:
   <Name>k__BackingField: Potato
   <ActionDesription>k__BackingField: hold to dig potato
   <InteractAction>k__BackingField:
-    <ActionDuration>k__BackingField: 0.5
+    <ActionDuration>k__BackingField: 0.3
     ActionProgress:
       value: 0
   input:
@@ -71,6 +71,7 @@ MonoBehaviour:
     m_Flags: 0
   inventoryPack: {fileID: 11400000, guid: 9c4edacff5be1554ba7dbcf81d70824d, type: 2}
   inventory: {fileID: 651639655957243188}
+  takeCount: {x: 2, y: 4}
 --- !u!135 &6584430857386606845
 SphereCollider:
   m_ObjectHideFlags: 0
@@ -104,4 +105,5 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c71b0ade8e1a7be4fa8740001e689703, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  <MaxPotatoCount>k__BackingField: 10
+  <MaxPotatoCount>k__BackingField: 20
+  changeInventoryClip: {fileID: 0}

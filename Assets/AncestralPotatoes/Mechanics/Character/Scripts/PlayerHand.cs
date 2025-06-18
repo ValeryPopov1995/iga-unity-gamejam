@@ -35,6 +35,8 @@ namespace AncestralPotatoes.Character
             SelectedPotato.Subscribe(TakeIfEmpty).AddTo(this);
             SelectedPotato.Subscribe(UpdateVisual).AddTo(this);
 
+            player.OnDeath += () => Disable();
+
             Enable();
         }
 
@@ -70,8 +72,6 @@ namespace AncestralPotatoes.Character
             if (SelectedPotato.Value == null)
                 if (inventory.TryGetRandomPotato(out var potato))
                     SelectedPotato.Value = potato;
-
-
         }
 
         private async void UpdateVisual(Potato potato)
