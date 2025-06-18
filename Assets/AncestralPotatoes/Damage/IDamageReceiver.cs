@@ -1,7 +1,10 @@
-﻿namespace AncestralPotatoes
+﻿using UnityEngine;
+
+namespace AncestralPotatoes
 {
     public interface IDamageReceiver
     {
-        void ReceiveDamage(DamageDescription damage);
+        public void ReceiveDamage(DamageDescription damage);
+        public Vector3 GetPosition();
     }
 }

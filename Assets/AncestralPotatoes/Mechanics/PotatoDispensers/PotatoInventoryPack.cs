@@ -1,6 +1,7 @@
 ﻿using AncestralPotatoes.Potatoes;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 
 namespace AncestralPotatoes.PotatoDispancers
@@ -23,7 +24,8 @@ namespace AncestralPotatoes.PotatoDispancers
             for (var i = 0; i < potatoCounts.Length; i++)
                 for (var j = 0; j < potatoCounts[i].count; j++)
                     potatos.Add(potatoCounts[i].prefab);
-            return potatos;
+            System.Random rand = new System.Random();
+            return potatos.OrderBy(p => rand.Next(potatos.Count)).ToList();
         }
     }
 }

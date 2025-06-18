@@ -15,3 +15,5 @@ MonoBehaviour:
   potatoCounts:
   - prefab: {fileID: 6941729985430978340, guid: 0adce2986135a564ab059cf40edd2aae, type: 3}
     count: 10
+  - prefab: {fileID: 6941729985430978340, guid: ecebcac0561b8ef4088b5f1dc22d4608, type: 3}
+    count: 10

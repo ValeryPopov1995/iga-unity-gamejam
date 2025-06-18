@@ -64,5 +64,7 @@ namespace AncestralPotatoes.Character
             JumpCoef = jump;
             RotateCoef = rotate;
         }
+
+        public Vector3 GetPosition() => transform.position;
     }
 }

@@ -33,5 +33,10 @@ namespace AncestralPotatoes.Mechanics.PotatoDispensers
         {
             OnDispenserDestroy?.Invoke(this);
         }
+
+        public int GetPotatoCount()
+        {
+            return 1;
+        }
     }
 }

@@ -71,7 +71,8 @@ namespace AncestralPotatoes.Enemies
 
         public void SetTargetPosition(Vector3 targetPos)
         {
-            if (!agent.enabled) return;
+            if (!agent.enabled)
+                return;
             agent.SetDestination(targetPos);
         }
 
@@ -97,7 +98,8 @@ namespace AncestralPotatoes.Enemies
 
         public void ReceiveDamage(DamageDescription damage)
         {
-            if (isDead) return;
+            if (isDead)
+                return;
             Health -= damage.Amount;
             if (Health < 0)
             {
@@ -138,5 +140,7 @@ namespace AncestralPotatoes.Enemies
             Hand.SelectPotato();
             Hand.ThrowPotato(1f);
         }
+
+        public Vector3 GetPosition() => transform.position;
     }
 }

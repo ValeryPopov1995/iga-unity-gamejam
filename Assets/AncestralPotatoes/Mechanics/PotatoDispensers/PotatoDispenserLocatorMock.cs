@@ -22,7 +22,7 @@ namespace AncestralPotatoes.Mechanics.PotatoDispensers
 
         public IPotatoDispenser GetClosestDispenserWithPotato(Vector3 position)
         {
-            return dispensers.OrderBy(d => Vector3.Distance(position, d.GetPosition())).FirstOrDefault();
+            return dispensers.Where(d => d.GetPotatoCount() != 0).OrderBy(d => Vector3.Distance(position, d.GetPosition())).FirstOrDefault();
         }
     }
 }
