@@ -16,11 +16,6 @@ namespace AncestralPotatoes.Enemies
         private NavMeshAgent agent;
         private IStateMachine stateMachine;
 
-#if UNITY_EDITOR
-        public string CurrentState;
-#endif
-
-
         [Inject] private readonly Player player;
         public IPotatoInventory PotatoInventory { get; protected set; }
         public ThrowingHand Hand { get; protected set; }
@@ -67,9 +62,6 @@ namespace AncestralPotatoes.Enemies
         {
             if (stateMachine != null)
                 stateMachine.Update();
-#if !UNITY_EDITOR
-            CurrentState = stateMachine.GetCurrentState().GetType().Name;
-#endif
         }
 
         public void SetTargetPosition(Vector3 targetPos)
