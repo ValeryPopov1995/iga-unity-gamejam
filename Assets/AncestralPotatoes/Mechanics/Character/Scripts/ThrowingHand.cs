@@ -35,6 +35,7 @@ namespace AncestralPotatoes.Character
 
             if (SelectedPotato.Value != null)
                 inventory.TryAddPotato(SelectedPotato.Value);
+
             SelectedPotato.Value = potato;
         }
     }

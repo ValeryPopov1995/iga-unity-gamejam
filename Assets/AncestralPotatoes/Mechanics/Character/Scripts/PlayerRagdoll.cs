@@ -19,6 +19,8 @@ namespace AncestralPotatoes.Character
 
         public async UniTask SetRagdoll(bool state)
         {
+            if (!state)
+                motor.SetPosition(motor.transform.position);
             motor.enabled = !state;
             rigidbody.isKinematic = !state;
             await UniTask.NextFrame();

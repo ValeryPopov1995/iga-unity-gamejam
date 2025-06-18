@@ -160,6 +160,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   <MaxPotatoCount>k__BackingField: 10
+  changeInventoryClip: {fileID: 8300000, guid: 7cb2475731cca604aadc0f5148038732, type: 3}
 --- !u!1001 &8953939928289921877
 PrefabInstance:
   m_ObjectHideFlags: 0

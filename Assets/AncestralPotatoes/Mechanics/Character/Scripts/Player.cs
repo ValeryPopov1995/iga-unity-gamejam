@@ -1,4 +1,5 @@
 ﻿using AncestralPotatoes.Cart;
+using System;
 using System.Collections.Generic;
 using UnityEngine;
 using Zenject;
@@ -7,6 +8,8 @@ namespace AncestralPotatoes.Character
 {
     public class Player : MonoBehaviour, IDamageReceiver, IPlayerModificator
     {
+        public event Action OnDeath;
+
         [field: SerializeField] public float Health { get; private set; } = 30f;
         public PotatoInventory Inventory { get; private set; }
         public PlayerHand Hand { get; private set; }
@@ -17,6 +20,8 @@ namespace AncestralPotatoes.Character
         public float MoveCoef { get; private set; }
         public float JumpCoef { get; private set; }
         public float RotateCoef { get; private set; }
+        public bool IsDead => Health <= 0;
+
 
         [SerializeField] private float demageShake = 1;
         [Inject] private readonly PlayerCamera playerCamera;
@@ -34,8 +39,12 @@ namespace AncestralPotatoes.Character
 
         public void ReceiveDamage(DamageDescription damage)
         {
+            if (IsDead) return;
+
             Health -= damage.Amount;
             playerCamera.Shake(demageShake);
+            Ragdoll.SetRagdoll(true);
+            OnDeath?.Invoke();
             Debug.Log($"Received {damage.Amount} damage ({Health})");
         }
 

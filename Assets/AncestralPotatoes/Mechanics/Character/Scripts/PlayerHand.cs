@@ -19,6 +19,7 @@ namespace AncestralPotatoes.Character
         [SerializeField] private TrajectoryRenderer trajectoryRenderer;
         [SerializeField] private HoldAction holdAction;
         [SerializeField] private AudioClip fireClip;
+        [SerializeField] private AudioClip switchClip;
         [SerializeField] private Transform visualParent;
         [Inject] private readonly Player player;
         [Inject] private readonly SfxPlayer sfxPlayer;
@@ -129,6 +130,12 @@ namespace AncestralPotatoes.Character
             base.ThrowPotato(force01);
             player.Animator.Fire();
             sfxPlayer.PlayOneShot(fireClip, transform.position);
+        }
+
+        public override void SelectPotato()
+        {
+            base.SelectPotato();
+            sfxPlayer.PlayOneShot(switchClip, transform.position);
         }
     }
 }
