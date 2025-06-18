@@ -12,7 +12,7 @@ namespace AncestralPotatoes.Potatoes
 
         public void Apply(Collision collision)
         {
-            var damageReceiver = collision.collider.GetComponent<IDamageReceiver>();
+            var damageReceiver = collision.collider.GetComponentInParent<IDamageReceiver>();
             if (damageReceiver == null)
                 return;
             var damage = CreateDamageDescription(collision);

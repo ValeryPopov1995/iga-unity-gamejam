@@ -47,7 +47,7 @@ namespace AncestralPotatoes.Character
             await UniTask.Delay(TimeSpan.FromSeconds(animationDelay));
 
             var damages = Physics.OverlapSphere(triggerPoint.position, radius)
-                .Select(collider => collider.GetComponent<IDamageReceiver>())
+                .Select(collider => collider.GetComponentInParent<IDamageReceiver>())
                 .Where(receiver => receiver != null && receiver != player);
 
             var description = new DamageDescription()

@@ -12,6 +12,7 @@ namespace AncestralPotatoes.Character
         public PlayerHand Hand { get; private set; }
         public PlayerAnimator Animator { get; private set; }
         public Rigidbody Rigidbody { get; private set; }
+        public IRagdoll Ragdoll { get; private set; }
 
         public float MoveCoef { get; private set; }
         public float JumpCoef { get; private set; }
@@ -20,6 +21,16 @@ namespace AncestralPotatoes.Character
         [SerializeField] private float demageShake = 1;
         [Inject] private readonly PlayerCamera playerCamera;
         private readonly HashSet<IPlayerModificator> modificators = new();
+
+        private void Awake()
+        {
+            Inventory = GetComponentInChildren<PotatoInventory>();
+            Hand = GetComponentInChildren<PlayerHand>();
+            Rigidbody = GetComponentInChildren<Rigidbody>();
+            Animator = GetComponentInChildren<PlayerAnimator>();
+            Ragdoll = GetComponentInChildren<PlayerRagdoll>();
+            CalculateModificators();
+        }
 
         public void ReceiveDamage(DamageDescription damage)
         {
@@ -37,15 +48,6 @@ namespace AncestralPotatoes.Character
         internal void RemoveModificator(IPlayerModificator cartCockpit)
         {
             modificators.Remove(cartCockpit);
-            CalculateModificators();
-        }
-
-        private void Awake()
-        {
-            Inventory = GetComponentInChildren<PotatoInventory>();
-            Hand = GetComponentInChildren<PlayerHand>();
-            Rigidbody = GetComponentInChildren<Rigidbody>();
-            Animator = GetComponentInChildren<PlayerAnimator>();
             CalculateModificators();
         }
 

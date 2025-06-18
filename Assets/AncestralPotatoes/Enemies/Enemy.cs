@@ -1,6 +1,7 @@
 using AncestralPotatoes.Character;
 using AncestralPotatoes.States;
 using Cysharp.Threading.Tasks;
+using NaughtyAttributes;
 using System;
 using UnityEngine;
 using UnityEngine.AI;
@@ -9,7 +10,7 @@ using Zenject;
 namespace AncestralPotatoes.Enemies
 {
     [RequireComponent(typeof(NavMeshAgent))]
-    public class Enemy : MonoBehaviour, IDamageReceiver
+    public class Enemy : MonoBehaviour, IDamageReceiver, IRagdoll
     {
         [SerializeField] private double destroyDelay = 9;
         private NavMeshAgent agent;
@@ -36,7 +37,9 @@ namespace AncestralPotatoes.Enemies
 
         public event Action<Enemy> OnDeath;
 
+        public bool IsRagdoll => !agent.enabled;
         private bool isDead => !agent.enabled;
+
 
         public static IState GetStartingState(EnemyStateContext context)
         {
@@ -108,15 +111,34 @@ namespace AncestralPotatoes.Enemies
 
         private async void Die(DamageDescription damage)
         {
-            agent.enabled = false;
-            await UniTask.NextFrame();
-            var rb = gameObject.AddComponent<Rigidbody>();
-            await UniTask.NextFrame();
-
+            await SetRagdoll(true);
+            var rb = GetComponent<Rigidbody>();
             rb.AddForceAtPosition(-damage.Force, damage.Point, ForceMode.Impulse);
 
             await UniTask.Delay(TimeSpan.FromSeconds(destroyDelay));
             Destroy(gameObject);
+        }
+
+#if UNITY_EDITOR
+        [Button] private void EnableRagdoll() => _ = SetRagdoll(true);
+        [Button] private void DisableRagdoll() => _ = SetRagdoll(false);
+#endif
+
+        public async UniTask SetRagdoll(bool state)
+        {
+            if (state)
+            {
+                agent.enabled = false;
+                await UniTask.NextFrame();
+                var rb = gameObject.AddComponent<Rigidbody>();
+                await UniTask.NextFrame();
+            }
+            else
+            {
+                agent.enabled = true;
+                if (TryGetComponent<Rigidbody>(out var rigidbody))
+                    Destroy(rigidbody);
+            }
         }
 
         public void ExecuteMeleeAttack()
