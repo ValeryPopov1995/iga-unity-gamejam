@@ -16,20 +16,22 @@ namespace AncestralPotatoes.Enemies
             return fighterList.OrderBy(f => Vector3.Distance(position, f.transform.position)).FirstOrDefault();
         }
 
-        public void SpawnFighter(Vector3 position)
+        public Enemy SpawnFighter(Vector3 position)
         {
-            var enemy = _enemyFactory.CreateFighter(position);
+            Enemy enemy = _enemyFactory.CreateFighter(position);
             enemy.OnDeath += RemoveFighter;
             fighterList.Add(enemy);
-            var context = _enemyBehaviourFactory.CreateEnemyStateContext(enemy);
+            EnemyStateContext context = _enemyBehaviourFactory.CreateEnemyStateContext(enemy);
             enemy.StartBehaviour(context);
+            return enemy;
         }
 
-        public void SpawnSupport(Vector3 position)
+        public Enemy SpawnSupport(Vector3 position)
         {
-            var enemy = _enemyFactory.CreateSupport(position);
-            var context = _enemyBehaviourFactory.CreateEnemyStateContext(enemy);
+            Enemy enemy = _enemyFactory.CreateSupport(position);
+            EnemyStateContext context = _enemyBehaviourFactory.CreateEnemyStateContext(enemy);
             enemy.StartBehaviour(context);
+            return enemy;
         }
 
         private void RemoveFighter(Enemy fighter)

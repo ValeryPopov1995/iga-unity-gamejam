@@ -13,6 +13,11 @@ namespace AncestralPotatoes.Enemies
         private NavMeshAgent agent;
         private IStateMachine stateMachine;
 
+#if UNITY_EDITOR
+        public string CurrentState;
+#endif
+
+
         [Inject] private readonly Player player;
         public IPotatoInventory PotatoInventory { get; protected set; }
         public ThrowingHand Hand { get; protected set; }
@@ -55,6 +60,10 @@ namespace AncestralPotatoes.Enemies
         {
             if (stateMachine != null)
                 stateMachine.Update();
+#if UNITY_EDITOR
+            CurrentState = stateMachine.GetCurrentState().GetType().Name;
+#endif
+
         }
 
         public void SetTargetPosition(Vector3 targetPos)
@@ -72,8 +81,8 @@ namespace AncestralPotatoes.Enemies
         {
             if (Application.isPlaying)
             {
-                var path = agent.path;
-                foreach (var corner in path.corners)
+                NavMeshPath path = agent.path;
+                foreach (Vector3 corner in path.corners)
                 {
                     Gizmos.DrawCube(corner, Vector3.one * 0.3f);
                 }
@@ -96,7 +105,7 @@ namespace AncestralPotatoes.Enemies
         {
             if ((player.transform.position - transform.position).magnitude < InteractionDistance)
             {
-                var damage = new DamageDescription()
+                DamageDescription damage = new DamageDescription()
                 {
                     Type = EDamageType.Impact,
                     Amount = MeleeAttackDamage

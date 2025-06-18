@@ -1,3 +1,4 @@
+using AncestralPotatoes.Enemies;
 using AncestralPotatoes.Mechanics.PotatoDispensers;
 using AncestralPotatoes.States;
 
@@ -11,7 +12,7 @@ public class GatheringState : EnemyState
 
     public override void Enter()
     {
-        var enemy = Context.Enemy;
+        Enemy enemy = Context.Enemy;
         dispenser = Context.DispenserLocator.GetClosestDispenserWithPotato(enemy.transform.position);
         enemy.SetTargetPosition(dispenser.GetPosition());
     }
@@ -35,12 +36,12 @@ public class GatheringState : EnemyState
             return;
         }
 
-        var enemy = Context.Enemy;
+        Enemy enemy = Context.Enemy;
 
         if ((enemy.transform.position - dispenser.GetPosition()).magnitude > enemy.InteractionDistance)
             return;
 
-        var isTherePotato = dispenser.TryGetPotato(out var potato);
+        bool isTherePotato = dispenser.TryGetPotato(out AncestralPotatoes.Potatoes.Potato potato);
         if (!isTherePotato)
         {
             Context.StateMachine.GoTo(Context.Gathering); // potato probably was collected by someone else, looking for next
