@@ -1,5 +1,6 @@
 using AncestralPotatoes.Character;
 using AncestralPotatoes.States;
+using Cysharp.Threading.Tasks;
 using System;
 using UnityEngine;
 using UnityEngine.AI;
@@ -10,6 +11,7 @@ namespace AncestralPotatoes.Enemies
     [RequireComponent(typeof(NavMeshAgent))]
     public class Enemy : MonoBehaviour, IDamageReceiver
     {
+        [SerializeField] private double destroyDelay = 9;
         private NavMeshAgent agent;
         private IStateMachine stateMachine;
 
@@ -33,6 +35,8 @@ namespace AncestralPotatoes.Enemies
         [field: SerializeField] public float FrightDistance { get; set; } = 0f;
 
         public event Action<Enemy> OnDeath;
+
+        private bool isDead => !agent.enabled;
 
         public static IState GetStartingState(EnemyStateContext context)
         {
@@ -60,14 +64,14 @@ namespace AncestralPotatoes.Enemies
         {
             if (stateMachine != null)
                 stateMachine.Update();
-#if UNITY_EDITOR
+#if !UNITY_EDITOR
             CurrentState = stateMachine.GetCurrentState().GetType().Name;
 #endif
-
         }
 
         public void SetTargetPosition(Vector3 targetPos)
         {
+            if (!agent.enabled) return;
             agent.SetDestination(targetPos);
         }
 
@@ -81,8 +85,8 @@ namespace AncestralPotatoes.Enemies
         {
             if (Application.isPlaying)
             {
-                NavMeshPath path = agent.path;
-                foreach (Vector3 corner in path.corners)
+                var path = agent.path;
+                foreach (var corner in path.corners)
                 {
                     Gizmos.DrawCube(corner, Vector3.one * 0.3f);
                 }
@@ -93,19 +97,33 @@ namespace AncestralPotatoes.Enemies
 
         public void ReceiveDamage(DamageDescription damage)
         {
+            if (isDead) return;
             Health -= damage.Amount;
             if (Health < 0)
             {
                 OnDeath?.Invoke(this);
-                Destroy(this);
+                Die(damage);
             }
+        }
+
+        private async void Die(DamageDescription damage)
+        {
+            agent.enabled = false;
+            await UniTask.NextFrame();
+            var rb = gameObject.AddComponent<Rigidbody>();
+            await UniTask.NextFrame();
+
+            rb.AddForceAtPosition(-damage.Force, damage.Point, ForceMode.Impulse);
+
+            await UniTask.Delay(TimeSpan.FromSeconds(destroyDelay));
+            Destroy(gameObject);
         }
 
         public void ExecuteMeleeAttack()
         {
             if ((player.transform.position - transform.position).magnitude < InteractionDistance)
             {
-                DamageDescription damage = new DamageDescription()
+                var damage = new DamageDescription()
                 {
                     Type = EDamageType.Impact,
                     Amount = MeleeAttackDamage

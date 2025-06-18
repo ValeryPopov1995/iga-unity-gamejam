@@ -38,6 +38,8 @@ namespace AncestralPotatoes.Character
         private async void Strike(InputAction.CallbackContext context)
         {
             if (time + cooldown > Time.time) return;
+            time = Time.time;
+
             shovel.SetActive(true);
             sfxPlayer.PlayOneShot(strikeClip, transform.position);
             player.Animator.Strike();
@@ -50,13 +52,14 @@ namespace AncestralPotatoes.Character
 
             var description = new DamageDescription()
             {
+                Point = triggerPoint.position,
+                Force = triggerPoint.forward,
                 Amount = damage,
                 Type = EDamageType.Impact
             };
             foreach (var damage in damages)
                 damage.ReceiveDamage(description);
 
-            time = Time.time;
 
             await UniTask.Delay(TimeSpan.FromSeconds(animationDelay));
             shovel.SetActive(false);

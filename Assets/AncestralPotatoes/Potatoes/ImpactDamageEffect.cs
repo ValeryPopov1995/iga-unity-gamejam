@@ -15,15 +15,20 @@ namespace AncestralPotatoes.Potatoes
             var damageReceiver = collision.collider.GetComponent<IDamageReceiver>();
             if (damageReceiver == null)
                 return;
-            var speed = collision.relativeVelocity.magnitude;
-            var damage = CreateDamageDescription(speed);
+            var damage = CreateDamageDescription(collision);
             damageReceiver.ReceiveDamage(damage);
         }
 
-        private DamageDescription CreateDamageDescription(float speed)
+        private DamageDescription CreateDamageDescription(Collision collision)
         {
+            var speed = collision.relativeVelocity.magnitude;
+
+            var point = collision.contactCount > 0 ? collision.contacts[0].point : default;
+            var force = collision.contactCount > 0 ? collision.contacts[0].impulse : default;
             var damage = new DamageDescription()
             {
+                Point = point,
+                Force = force,
                 Type = EDamageType.Impact
             };
             if (speed < MinSpeed)

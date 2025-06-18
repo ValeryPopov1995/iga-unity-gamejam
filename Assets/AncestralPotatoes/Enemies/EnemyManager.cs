@@ -18,18 +18,18 @@ namespace AncestralPotatoes.Enemies
 
         public Enemy SpawnFighter(Vector3 position)
         {
-            Enemy enemy = _enemyFactory.CreateFighter(position);
+            var enemy = _enemyFactory.CreateFighter(position);
             enemy.OnDeath += RemoveFighter;
             fighterList.Add(enemy);
-            EnemyStateContext context = _enemyBehaviourFactory.CreateEnemyStateContext(enemy);
+            var context = _enemyBehaviourFactory.CreateEnemyStateContext(enemy);
             enemy.StartBehaviour(context);
             return enemy;
         }
 
         public Enemy SpawnSupport(Vector3 position)
         {
-            Enemy enemy = _enemyFactory.CreateSupport(position);
-            EnemyStateContext context = _enemyBehaviourFactory.CreateEnemyStateContext(enemy);
+            var enemy = _enemyFactory.CreateSupport(position);
+            var context = _enemyBehaviourFactory.CreateEnemyStateContext(enemy);
             enemy.StartBehaviour(context);
             return enemy;
         }

@@ -15,9 +15,9 @@ namespace AncestralPotatoes.Scene
             Container.Bind<Player>().FromComponentInHierarchy().AsSingle();
             Container.Bind<PlayerCamera>().FromComponentInHierarchy().AsSingle();
 
-            Container.Bind<IEnemyFactory>().FromInstance(enemyFactory).AsSingle();
-            Container.Bind<IEnemyBehaviourFactory>().FromInstance(enemyBehaviourFactory).AsSingle();
-            Container.Bind<EnemyManager>().FromComponentInHierarchy().AsSingle();
+            Container.Bind<IEnemyFactory>().To<EnemyFactory>().FromInstance(enemyFactory).AsSingle();
+            Container.Bind<IEnemyBehaviourFactory>().To<EnemyBehaviourFactory>().FromInstance(enemyBehaviourFactory).AsSingle();
+            Container.BindInterfacesAndSelfTo<EnemyManager>().FromComponentInHierarchy().AsSingle();
 
             Container.Bind<SfxPlayer>().FromInstance(SfxPlayer.Create()).AsSingle();
         }
