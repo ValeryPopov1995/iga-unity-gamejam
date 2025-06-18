@@ -3,7 +3,7 @@ using Zenject;
 
 namespace AncestralPotatoes
 {
-    public class PlayerInstaller : Installer<PlayerInstaller>
+    public class StaticPlayerInstaller : Installer<StaticPlayerInstaller>
     {
         public override void InstallBindings()
         {
