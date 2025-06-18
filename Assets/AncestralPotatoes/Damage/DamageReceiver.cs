@@ -6,6 +6,11 @@ namespace AncestralPotatoes
     {
         public float Health = 10f;
 
+        public Vector3 GetPosition()
+        {
+            return transform.position;
+        }
+
         public void ReceiveDamage(DamageDescription damage)
         {
             switch (damage.Type)

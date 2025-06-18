@@ -26,7 +26,8 @@ namespace AncestralPotatoes.PotatoDispancers
         protected override void Interact(float progress01)
         {
             base.Interact(progress01);
-            if (progress01 < 1) return;
+            if (progress01 < 1)
+                return;
 
             if (inventory.TryGetRandomPotato(out var potato))
             {
@@ -38,5 +39,10 @@ namespace AncestralPotatoes.PotatoDispancers
         public Vector3 GetPosition() => transform.position;
 
         public bool TryGetPotato(out Potato potato) => inventory.TryGetRandomPotato(out potato);
+
+        public int GetPotatoCount()
+        {
+            return inventory.PotatoCount;
+        }
     }
 }
