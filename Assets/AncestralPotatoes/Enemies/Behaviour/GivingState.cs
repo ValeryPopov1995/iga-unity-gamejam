@@ -45,21 +45,21 @@ public class GivingState : EnemyState
             return;
         }
 
-        var enemy = Context.Enemy;
+        Enemy enemy = Context.Enemy;
 
         enemy.SetTargetPosition(fighter.transform.position);
 
         if (Vector3.Distance(enemy.transform.position, fighter.transform.position) >= enemy.InteractionDistance)
             return;
 
-        var eI = enemy.PotatoInventory;
-        if (!eI.TryGetRandomPotato(out var potato))
+        AncestralPotatoes.Character.IPotatoInventory eI = enemy.PotatoInventory;
+        if (!eI.TryGetRandomPotato(out AncestralPotatoes.Potatoes.Potato potato))
         {
             Context.StateMachine.GoTo(Context.Gathering);
             return;
         }
 
-        var fI = fighter.PotatoInventory;
+        AncestralPotatoes.Character.IPotatoInventory fI = fighter.PotatoInventory;
         fI.TryAddPotato(potato);
         if (eI.PotatoCount > 0)
             return;

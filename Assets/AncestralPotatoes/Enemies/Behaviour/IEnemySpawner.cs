@@ -1,8 +1,9 @@
 ﻿
+using AncestralPotatoes.Enemies;
 using UnityEngine;
 
 public interface IEnemySpawner
 {
-    public void SpawnFighter(Vector3 position);
-    public void SpawnSupport(Vector3 position);
+    public Enemy SpawnFighter(Vector3 position);
+    public Enemy SpawnSupport(Vector3 position);
 }

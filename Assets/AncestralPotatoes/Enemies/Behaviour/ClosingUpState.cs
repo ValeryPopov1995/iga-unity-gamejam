@@ -10,7 +10,6 @@ public class ClosingUpState : EnemyState
 
     public override void Enter()
     {
-        Context.Enemy.SetTargetPosition(Context.Player.transform.position);
     }
 
     public override void Exit()
@@ -19,11 +18,12 @@ public class ClosingUpState : EnemyState
 
     public override void Update()
     {
-        var enemy = Context.Enemy;
+        Enemy enemy = Context.Enemy;
         if (Context.DistanceToPlayer() < enemy.ActivityRangeFromPlayer)
         {
             Context.StateMachine.GoTo(Enemy.GetStartingState(Context));
             return;
         }
+        enemy.SetTargetPosition(Context.Player.transform.position);
     }
 }
