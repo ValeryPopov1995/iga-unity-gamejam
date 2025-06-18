@@ -12,6 +12,7 @@ GameObject:
   - component: {fileID: 628935618341030379}
   - component: {fileID: 6941729985430978340}
   - component: {fileID: 5382053749904678177}
+  - component: {fileID: 2745590566629732754}
   m_Layer: 0
   m_Name: P_Expl_Potato
   m_TagString: Untagged
@@ -91,10 +92,26 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b81380e36adf8f041bfa7f71ceb01ef3, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  MinDamage: 20
-  MaxDamage: 50
-  Radius: 15
+  MinDamage: 0
+  MaxDamage: 20
+  Radius: 5
   hasExploded: 0
+--- !u!114 &2745590566629732754
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1677395569462745002}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 3649034f4fd122f47b263cca0498f5c5, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  MinDamage: 3
+  MaxDamage: 20
+  MinSpeed: 1
+  SpeedDamageCoefficient: 0.5
 --- !u!1001 &328119949227129620
 PrefabInstance:
   m_ObjectHideFlags: 0

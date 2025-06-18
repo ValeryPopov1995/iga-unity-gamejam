@@ -15,6 +15,7 @@ namespace AncestralPotatoes.Scene
 
         public void PlayOneShot(AudioClip clip, Vector3 position = default, float volume = 1)
         {
+            if (Time.time < 1) return;
             if (clip == null) return;
             audioSource.spatialBlend = position == default ? 0 : 1;
             audioSource.transform.position = position;

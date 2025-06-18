@@ -43,9 +43,13 @@ namespace AncestralPotatoes.Character
 
             Health -= damage.Amount;
             playerCamera.Shake(demageShake);
-            Ragdoll.SetRagdoll(true);
-            OnDeath?.Invoke();
             Debug.Log($"Received {damage.Amount} damage ({Health})");
+
+            if (IsDead)
+            {
+                Ragdoll.SetRagdoll(true);
+                OnDeath?.Invoke();
+            }
         }
 
         internal void AddModificator(IPlayerModificator cartCockpit)

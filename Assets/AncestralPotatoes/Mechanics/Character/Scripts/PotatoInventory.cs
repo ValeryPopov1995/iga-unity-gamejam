@@ -41,7 +41,7 @@ namespace AncestralPotatoes.Character
             Debug.Log("Potato removed", this);
 #endif
             OnPotatoRemoved?.Invoke(potato);
-            sxfPlayer.PlayOneShot(changeInventoryClip);
+            sxfPlayer.PlayOneShot(changeInventoryClip, transform.position);
             return true;
         }
 
@@ -53,7 +53,7 @@ namespace AncestralPotatoes.Character
             Debug.Log("Potato added", this);
 #endif
             OnPotatoAdded?.Invoke(potato);
-            sxfPlayer.PlayOneShot(changeInventoryClip);
+            sxfPlayer.PlayOneShot(changeInventoryClip, transform.position);
             return true;
         }
     }
