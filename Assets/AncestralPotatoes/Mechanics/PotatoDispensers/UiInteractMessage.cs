@@ -24,6 +24,7 @@ namespace AncestralPotatoes.PotatoDispancers
 
         [SerializeField] private Interaction interaction;
         [SerializeField] private CanvasGroup canvasGroup;
+        [SerializeField] private float startAlpha = .5f;
         [SerializeField] private float fadeDuration = .5f;
         [SerializeField] private Image bar;
         [SerializeField] private TMP_Text label;
@@ -53,7 +54,7 @@ namespace AncestralPotatoes.PotatoDispancers
             description.text = interactable.ActionDesription;
 
             var token = ResetCancellation();
-            while (alpha < 1 && !token.IsCancellationRequested)
+            while (alpha < startAlpha && !token.IsCancellationRequested)
             {
                 alpha += Time.deltaTime / fadeDuration;
                 await UniTask.NextFrame();

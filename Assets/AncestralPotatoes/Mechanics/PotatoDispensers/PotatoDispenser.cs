@@ -1,21 +1,42 @@
 using AncestralPotatoes.Character;
+using AncestralPotatoes.Mechanics.PotatoDispensers;
 using AncestralPotatoes.Potatoes;
+using System;
 using UnityEngine;
 using Zenject;
 
 namespace AncestralPotatoes.PotatoDispancers
 {
-    public class PotatoDispenser : Interactable
+    public class PotatoDispenser : Interactable, IPotatoDispenser
     {
-        [SerializeField] private Potato potatoPrefab;
+        [SerializeField] private PotatoInventoryPack inventoryPack;
+        [SerializeField] private PotatoInventory inventory;
         [Inject] private readonly Player player;
+        [Inject] private readonly IPotatoDispenserLocator locator;
+
+        public event Action<IPotatoDispenser> OnDispenserDestroy;
+
+        protected override void Awake()
+        {
+            base.Awake();
+            locator.Register(this);
+            inventory.AddPotatos(inventoryPack.GetCollection());
+        }
 
         protected override void Interact(float progress01)
         {
             base.Interact(progress01);
             if (progress01 < 1) return;
-            player.Inventory.TryAddPotato(potatoPrefab);
-            Debug.Log("potato dispensed", this);
+
+            if (inventory.TryGetRandomPotato(out var potato))
+            {
+                player.Inventory.TryAddPotato(potato);
+                Debug.Log("potato dispensed", this);
+            }
         }
+
+        public Vector3 GetPosition() => transform.position;
+
+        public bool TryGetPotato(out Potato potato) => inventory.TryGetRandomPotato(out potato);
     }
 }

@@ -23,6 +23,7 @@ namespace AncestralPotatoes.Character.Ui
 
         [SerializeField] private Image bar;
         [SerializeField] private CanvasGroup canvasGroup;
+        [SerializeField] private float startAlpha = .5f;
         [SerializeField] private float fadeDuration = 1;
         [Inject] private readonly Player player;
         private CancellationTokenSource source;
@@ -54,17 +55,16 @@ namespace AncestralPotatoes.Character.Ui
             if (!source.IsCancellationRequested)
                 source?.Cancel();
 
-            if (alpha < 1)
-                alpha = 1;
+            if (alpha < startAlpha)
+                alpha = startAlpha;
         }
 
         private async void FadeBar(float fadeDuration, CancellationToken token)
         {
-            float load = 0;
-            while (load < 1 && !token.IsCancellationRequested)
+            var load = startAlpha;
+            while (load > 0 && !token.IsCancellationRequested)
             {
-                load += Time.deltaTime / fadeDuration;
-                alpha = 1 - load;
+                alpha -= Time.deltaTime / fadeDuration;
                 await UniTask.NextFrame();
             }
         }

@@ -6,7 +6,7 @@ namespace AncestralPotatoes
     {
         public override void InstallBindings()
         {
-            PlayerInstaller.Install(Container);
+            StaticPlayerInstaller.Install(Container);
         }
     }
 }

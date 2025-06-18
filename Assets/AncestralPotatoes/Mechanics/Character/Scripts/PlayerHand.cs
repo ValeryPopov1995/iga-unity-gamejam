@@ -1,10 +1,12 @@
 using AncestralPotatoes.PotatoDispancers;
 using AncestralPotatoes.Potatoes;
+using AncestralPotatoes.Scene;
 using Cysharp.Threading.Tasks;
 using NaughtyAttributes;
 using UniRx;
 using UnityEngine;
 using UnityEngine.InputSystem;
+using Zenject;
 
 namespace AncestralPotatoes.Character
 {
@@ -16,6 +18,11 @@ namespace AncestralPotatoes.Character
         [SerializeField] private InputAction fire, change;
         [SerializeField] private TrajectoryRenderer trajectoryRenderer;
         [SerializeField] private HoldAction holdAction;
+        [SerializeField] private AudioClip fireClip;
+        [SerializeField] private Transform visualParent;
+        [Inject] private readonly Player player;
+        [Inject] private readonly SfxPlayer sfxPlayer;
+        private GameObject visual;
 
         private void Start()
         {
@@ -25,6 +32,7 @@ namespace AncestralPotatoes.Character
 
             inventory.OnPotatoAdded += TakeIfEmpty;
             SelectedPotato.Subscribe(TakeIfEmpty).AddTo(this);
+            SelectedPotato.Subscribe(UpdateVisual).AddTo(this);
 
             Enable();
         }
@@ -61,6 +69,25 @@ namespace AncestralPotatoes.Character
             if (SelectedPotato.Value == null)
                 if (inventory.TryGetRandomPotato(out var potato))
                     SelectedPotato.Value = potato;
+
+
+        }
+
+        private async void UpdateVisual(Potato potato)
+        {
+            if (visual != null)
+            {
+                Destroy(visual);
+                await UniTask.NextFrame();
+            }
+
+            if (potato != null)
+            {
+                var instance = potato.CreateVisualInstance();
+                instance.transform.SetParent(visualParent, false);
+                instance.transform.SetLocalPositionAndRotation(default, default);
+                visual = instance;
+            }
         }
 
         [Button]
@@ -95,6 +122,13 @@ namespace AncestralPotatoes.Character
                 trajectoryRenderer.DrawTrajectory(spawnPoint.position, CalculateForce(ThrowLoad01.Value));
                 await UniTask.NextFrame();
             }
+        }
+
+        public override void ThrowPotato(float force01)
+        {
+            base.ThrowPotato(force01);
+            player.Animator.Fire();
+            sfxPlayer.PlayOneShot(fireClip, transform.position);
         }
     }
 }

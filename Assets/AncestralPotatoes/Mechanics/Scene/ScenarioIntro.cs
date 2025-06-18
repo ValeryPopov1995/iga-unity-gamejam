@@ -9,6 +9,7 @@ namespace AncestralPotatoes.Scene
     public class ScenarioIntro : MonoBehaviour
     {
         [SerializeField] private double delayToSpawb;
+        [SerializeField] private double delayToDestroy;
         [Inject] private readonly Player player;
         [Inject] private readonly PlayerCamera PlayerCamera;
 
@@ -19,6 +20,8 @@ namespace AncestralPotatoes.Scene
             await UniTask.Delay(TimeSpan.FromSeconds(delayToSpawb));
             player.gameObject.SetActive(true);
             PlayerCamera.gameObject.SetActive(true);
+            await UniTask.Delay(TimeSpan.FromSeconds(delayToDestroy));
+            Destroy(gameObject);
         }
     }
 }

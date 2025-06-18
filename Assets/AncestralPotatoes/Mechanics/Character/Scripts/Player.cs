@@ -1,6 +1,7 @@
 ﻿using AncestralPotatoes.Cart;
 using System.Collections.Generic;
 using UnityEngine;
+using Zenject;
 
 namespace AncestralPotatoes.Character
 {
@@ -9,17 +10,21 @@ namespace AncestralPotatoes.Character
         [field: SerializeField] public float Health { get; private set; } = 30f;
         public PotatoInventory Inventory { get; private set; }
         public PlayerHand Hand { get; private set; }
+        public PlayerAnimator Animator { get; private set; }
         public Rigidbody Rigidbody { get; private set; }
 
         public float MoveCoef { get; private set; }
         public float JumpCoef { get; private set; }
         public float RotateCoef { get; private set; }
 
+        [SerializeField] private float demageShake = 1;
+        [Inject] private readonly PlayerCamera playerCamera;
         private readonly HashSet<IPlayerModificator> modificators = new();
 
         public void ReceiveDamage(DamageDescription damage)
         {
             Health -= damage.Amount;
+            playerCamera.Shake(demageShake);
             Debug.Log($"Received {damage.Amount} damage ({Health})");
         }
 
@@ -40,6 +45,7 @@ namespace AncestralPotatoes.Character
             Inventory = GetComponentInChildren<PotatoInventory>();
             Hand = GetComponentInChildren<PlayerHand>();
             Rigidbody = GetComponentInChildren<Rigidbody>();
+            Animator = GetComponentInChildren<PlayerAnimator>();
             CalculateModificators();
         }
 
