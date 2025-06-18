@@ -22,13 +22,22 @@ namespace AncestralPotatoes.Enemies.Behaviour
 
         public override void Update()
         {
+            if (!Context.IsCloseEnoughToPlayer())
+            {
+                Context.StateMachine.GoTo(Context.ClosingUp);
+                return;
+            }
+
             var enemy = Context.Enemy;
 
             var playerPos = Context.Player.transform.position;
             var enemyPos = enemy.transform.position;
 
-            if ((playerPos - enemyPos).magnitude > enemy.MeleeAttackDistance)
+            if ((playerPos - enemyPos).magnitude > enemy.InteractionDistance)
+            {
                 StateMachine.GoTo(Context.Approach);
+                return;
+            }
 
             if (AttackCooldown <= 0f)
             {

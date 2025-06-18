@@ -16,13 +16,11 @@ namespace AncestralPotatoes.Enemies
 
         private void Awake()
         {
-            //click.performed += OnClick;
             move.performed += OnMove;
         }
 
         private void OnDestroy()
         {
-            //click.performed -= OnClick;
             move.performed -= OnMove;
         }
 
@@ -31,16 +29,6 @@ namespace AncestralPotatoes.Enemies
             _mousePos = context.ReadValue<Vector2>();
         }
 
-        //private void OnClick(InputAction.CallbackContext context)
-        //{
-        //    var camera = Camera.main;
-        //    var ray = camera.ScreenPointToRay(_mousePos);
-        //    if (Physics.Raycast(ray, out var hitInfo))
-        //    {
-        //        transform.position = hitInfo.point;
-        //        Spawn(transform.position);
-        //    }
-        //}
 
         private void OnEnable()
         {
@@ -55,9 +43,15 @@ namespace AncestralPotatoes.Enemies
         }
 
         [Button]
-        public void Spawn()
+        public void SpawnFighter()
         {
-            _enemyManager.CreateEnemy(transform.position);
+            _enemyManager.SpawnFighter(transform.position);
+        }
+
+        [Button]
+        public void SpawnSupport()
+        {
+            _enemyManager.SpawnSupport(transform.position);
         }
     }
 }

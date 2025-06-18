@@ -6,7 +6,7 @@ namespace AncestralPotatoes.Character
 {
     public class Player : MonoBehaviour, IDamageReceiver, IPlayerModificator
     {
-        public float Health { get; private set; }
+        [field: SerializeField] public float Health { get; private set; } = 30f;
         public PotatoInventory Inventory { get; private set; }
         public PlayerHand Hand { get; private set; }
         public Rigidbody Rigidbody { get; private set; }
@@ -20,6 +20,7 @@ namespace AncestralPotatoes.Character
         public void ReceiveDamage(DamageDescription damage)
         {
             Health -= damage.Amount;
+            Debug.Log($"Received {damage.Amount} damage ({Health})");
         }
 
         internal void AddModificator(IPlayerModificator cartCockpit)

@@ -8,7 +8,7 @@ namespace AncestralPotatoes.Enemies
         {
             Container.Bind<IEnemyFactory>().To<EnemyFactory>().FromComponentOn(gameObject).AsSingle();
             Container.Bind<IEnemyBehaviourFactory>().To<EnemyBehaviourFactory>().FromComponentOn(gameObject).AsSingle();
-            Container.Bind<EnemyManager>().FromComponentOn(gameObject).AsSingle();
+            Container.BindInterfacesAndSelfTo<EnemyManager>().FromComponentOn(gameObject).AsSingle();
         }
     }
 }

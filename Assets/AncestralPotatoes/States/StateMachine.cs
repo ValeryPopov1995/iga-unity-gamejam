@@ -1,3 +1,5 @@
+using UnityEngine;
+
 namespace AncestralPotatoes.States
 {
     public class StateMachine : IStateMachine
@@ -11,8 +13,10 @@ namespace AncestralPotatoes.States
         public void GoTo(IState state)
         {
             State?.Exit();
+            Debug.Log($"{GetHashCode()} Exited {State?.GetType().Name}");
             State = state;
             State.Enter();
+            Debug.Log($"{GetHashCode()} Entered {State.GetType().Name}");
         }
 
         public void Initialize(IState state)
